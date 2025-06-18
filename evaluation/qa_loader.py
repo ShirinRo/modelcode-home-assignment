@@ -3,7 +3,6 @@ QA Data Loader Module
 Handles loading Q&A pairs from various sources.
 """
 
-import json
 import logging
 from typing import List
 from dataclasses import dataclass
@@ -91,39 +90,4 @@ class QADataLoader:
                 question="How is the RAG system implemented?",
                 reference_answer="The RAG system is implemented using a combination of code parsing, vector storage with ChromaDB, and semantic search to retrieve relevant code chunks for answering questions.",
             ),
-            QAPair(
-                question="How does the CodeParser parse Python files?",
-                reference_answer="The CodeParser uses Python's AST module to parse files into logical chunks like classes, functions, and methods, extracting metadata and dependencies for each chunk.",
-            ),
-            QAPair(
-                question="What is the purpose of the VectorStore class?",
-                reference_answer="The VectorStore class handles vector storage and retrieval using ChromaDB, encoding code chunks as vectors for semantic search capabilities.",
-            ),
-            QAPair(
-                question="How are code chunks created?",
-                reference_answer="Code chunks are created by parsing Python AST nodes to extract logical code blocks like functions, classes, and methods, along with their metadata and dependencies.",
-            ),
         ]
-
-    @staticmethod
-    def load_from_file(file_path: str) -> List[QAPair]:
-        """Load Q&A pairs from a JSON file"""
-        try:
-            with open(file_path, "r") as f:
-                data = json.load(f)
-
-            qa_pairs = []
-            for item in data:
-                qa_pairs.append(
-                    QAPair(
-                        question=item["question"],
-                        reference_answer=item["reference_answer"],
-                    )
-                )
-
-            logger.info(f"Loaded {len(qa_pairs)} Q&A pairs from file: {file_path}")
-            return qa_pairs
-
-        except Exception as e:
-            logger.error(f"Error loading from file {file_path}: {e}")
-            raise

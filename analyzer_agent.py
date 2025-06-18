@@ -5,7 +5,7 @@ Uses MCP Code Q&A server to analyze Python repositories
 and produce a detailed architecture and design report.
 
 USAGE:
-    python repo_analysis_agent.py path/to/repo --output report.md --mcp-server mcp_code_qa_server.py
+    python repo_analysis_agent.py path/to/repo --output report.md --mcp-server mcp_server.py
 """
 
 import asyncio
@@ -17,7 +17,7 @@ from typing import List, Dict, Any
 import logging
 import os
 
-from mcp_client import MCPClient  # Use your provided MCPClient
+from repo_mcp.mcp_client import MCPClient
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] %(levelname)s: %(message)s"
@@ -243,7 +243,7 @@ async def main():
     )
     parser.add_argument(
         "--mcp-server",
-        default="mcp_code_qa_server.py",
+        default="mcp_server.py",
         help="Path to MCP server script",
     )
     args = parser.parse_args()

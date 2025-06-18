@@ -10,21 +10,20 @@ import time
 import statistics
 import argparse
 import logging
+
 from typing import Dict, List, Optional, Any, Literal
 from dataclasses import dataclass, asdict
-
 from dotenv import load_dotenv
-
-# Load environment variables
-load_dotenv()
-
-# Import our evaluation modules
 from qa_loader import QADataLoader, QAPair
 from nlp_evaluator import NLPEvaluator, NLPScores
 from llm_judge_evaluator import LLMJudgeEvaluator, JudgeScores
 from evaluation_reporter import EvaluationReporter
-from rag_system import RAGSystem
 
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from repo_mcp.rag_system import RAGSystem
+
+load_dotenv()
 logger = logging.getLogger(__name__)
 
 # Constants
@@ -247,17 +246,9 @@ Examples:
     )
     parser.add_argument(
         "--qa-source",
-        choices=["github", "sample", "file"],
+        choices=["github", "sample"],
         default="github",
         help="Source of Q&A pairs (default: github)",
-    )
-    parser.add_argument(
-        "--qa-file", help="Path to Q&A file (required if --qa-source=file)"
-    )
-    parser.add_argument(
-        "--output",
-        default="evaluation_report.json",
-        help="Output file for evaluation report (default: evaluation_report.json)",
     )
 
     args = parser.parse_args()
@@ -265,10 +256,6 @@ Examples:
     # Validate arguments
     if not os.path.exists(args.repo_path):
         print(f"Error: Repository path '{args.repo_path}' does not exist.")
-        sys.exit(1)
-
-    if args.qa_source == "file" and not args.qa_file:
-        print("Error: --qa-file is required when --qa-source=file")
         sys.exit(1)
 
     if "judge" in args.methods and not ANTHROPIC_API_KEY:
@@ -280,7 +267,6 @@ Examples:
     print("Starting RAG Evaluation Suite...")
     print(f"Repository: {args.repo_path}")
     print(f"Methods: {', '.join(args.methods)}")
-    print(f"Output: {args.output}")
 
     try:
         # Initialize evaluation suite
@@ -295,8 +281,6 @@ Examples:
                 qa_pairs = QADataLoader.load_from_github()
             elif args.qa_source == "sample":
                 qa_pairs = QADataLoader.load_sample_data()
-            elif args.qa_source == "file":
-                qa_pairs = QADataLoader.load_from_file(args.qa_file)
         except Exception as e:
             print(f"Error loading Q&A data: {e}")
             sys.exit(1)
@@ -319,18 +303,18 @@ Examples:
             "repo_path": args.repo_path,
             "qa_source": args.qa_source,
             "methods": args.methods,
-            "qa_file": args.qa_file if args.qa_source == "file" else None,
         }
 
         print("\n5. Generating report...")
+        report_path = "evaluation/evaluation_report.json"
         report = EvaluationReporter.generate_report(
-            results, args.output, evaluation_config
+            results, report_path, evaluation_config
         )
 
         # Print simple summary to console
         print_simple_summary(results, args.methods)
 
-        print(f"\nReport saved to: {args.output}")
+        print(f"\nReport saved to: {report_path}")
         return report
 
     except KeyboardInterrupt:

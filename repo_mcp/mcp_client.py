@@ -209,7 +209,7 @@ class MCPClient:
 
 async def main():
     client = MCPClient()
-    await client.connect_to_server("mcp_code_qa_server.py")
+    await client.connect_to_server("mcp_server.py")
 
     # First query - index repo
     result1 = await client.process_query("index the repo grip-no-tests")
