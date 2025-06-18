@@ -1,22 +1,23 @@
 #!/usr/bin/env python3
 """
-Retrieval Augmented Generation (RAG).
+Improved Retrieval Augmented Generation (RAG) system for code repositories.
+Maintains API compatibility with existing MCP server.
 """
 
-import json
 import os
 from pathlib import Path
-from typing import List, Dict, Any, Optional
+from typing import List, cast
 import logging
-from dataclasses import dataclass
 
 # Third-party imports
-import ast
-import tiktoken
-from sentence_transformers import SentenceTransformer
-import chromadb
+from langchain.text_splitter import PythonCodeTextSplitter
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain.vectorstores import Chroma
+from langchain.schema import Document
 from langchain_anthropic import ChatAnthropic
-from langchain.schema import HumanMessage, SystemMessage
+from langchain.chains import RetrievalQA
+from langchain.prompts import PromptTemplate
+from langchain.schema import HumanMessage, SystemMessage, BaseMessage
 from pydantic import SecretStr
 from dotenv import load_dotenv
 
@@ -28,266 +29,39 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-@dataclass
-class CodeChunk:
-    """Represents a logical chunk of code with metadata"""
-
-    content: str
-    chunk_type: str  # 'class', 'function', 'method', 'module', 'import'
-    name: str
-    file_path: str
-    start_line: int
-    end_line: int
-    docstring: Optional[str] = None
-    parent_class: Optional[str] = None
-    dependencies: Optional[List[str]] = None
-
-    def __post_init__(self):
-        if self.dependencies is None:
-            self.dependencies = []
-
-
-class CodeParser:
-    """Parse Python code into logical chunks"""
-
-    def __init__(self):
-        self.encoding = tiktoken.get_encoding("cl100k_base")
-
-    def parse_file(self, file_path: str) -> List[CodeChunk]:
-        """Parse a Python file into logical code chunks"""
-        try:
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
-
-            tree = ast.parse(content)
-            chunks = []
-            lines = content.split("\n")
-
-            # Extract imports first
-            imports = self._extract_imports(tree, lines, file_path)
-            chunks.extend(imports)
-
-            # Extract classes and functions
-            for node in ast.walk(tree):
-                if isinstance(node, ast.ClassDef):
-                    chunk = self._extract_class(node, lines, file_path)
-                    chunks.append(chunk)
-
-                    # Extract methods within the class
-                    for item in node.body:
-                        if isinstance(item, ast.FunctionDef):
-                            method_chunk = self._extract_method(
-                                item, lines, file_path, node.name
-                            )
-                            chunks.append(method_chunk)
-
-                elif isinstance(node, ast.FunctionDef):
-                    # Only top-level functions (not methods)
-                    if not any(
-                        isinstance(parent, ast.ClassDef)
-                        for parent in ast.walk(tree)
-                        if hasattr(parent, "body")
-                        and node in getattr(parent, "body", [])
-                    ):
-                        chunk = self._extract_function(node, lines, file_path)
-                        chunks.append(chunk)
-
-            return chunks
-
-        except Exception as e:
-            logger.error(f"Error parsing {file_path}: {e}")
-            return []
-
-    def _extract_imports(
-        self, tree: ast.AST, lines: List[str], file_path: str
-    ) -> List[CodeChunk]:
-        """Extract import statements"""
-        chunks = []
-        import_lines = []
-
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.Import, ast.ImportFrom)):
-                import_lines.append(node.lineno)
-
-        if import_lines:
-            start_line = min(import_lines)
-            end_line = max(import_lines)
-            content = "\n".join(lines[start_line - 1 : end_line])
-
-            chunk = CodeChunk(
-                content=content,
-                chunk_type="import",
-                name="imports",
-                file_path=file_path,
-                start_line=start_line,
-                end_line=end_line,
-            )
-            chunks.append(chunk)
-
-        return chunks
-
-    def _extract_class(
-        self, node: ast.ClassDef, lines: List[str], file_path: str
-    ) -> CodeChunk:
-        """Extract a class definition"""
-        start_line = node.lineno
-        end_line = node.end_lineno or start_line
-        content = "\n".join(lines[start_line - 1 : end_line])
-
-        docstring = ast.get_docstring(node)
-        dependencies = self._extract_dependencies(node)
-
-        return CodeChunk(
-            content=content,
-            chunk_type="class",
-            name=node.name,
-            file_path=file_path,
-            start_line=start_line,
-            end_line=end_line,
-            docstring=docstring,
-            dependencies=dependencies,
-        )
-
-    def _extract_function(
-        self, node: ast.FunctionDef, lines: List[str], file_path: str
-    ) -> CodeChunk:
-        """Extract a function definition"""
-        start_line = node.lineno
-        end_line = node.end_lineno or start_line
-        content = "\n".join(lines[start_line - 1 : end_line])
-
-        docstring = ast.get_docstring(node)
-        dependencies = self._extract_dependencies(node)
-
-        return CodeChunk(
-            content=content,
-            chunk_type="function",
-            name=node.name,
-            file_path=file_path,
-            start_line=start_line,
-            end_line=end_line,
-            docstring=docstring,
-            dependencies=dependencies,
-        )
-
-    def _extract_method(
-        self, node: ast.FunctionDef, lines: List[str], file_path: str, parent_class: str
-    ) -> CodeChunk:
-        """Extract a method definition"""
-        start_line = node.lineno
-        end_line = node.end_lineno or start_line
-        content = "\n".join(lines[start_line - 1 : end_line])
-
-        docstring = ast.get_docstring(node)
-        dependencies = self._extract_dependencies(node)
-
-        return CodeChunk(
-            content=content,
-            chunk_type="method",
-            name=node.name,
-            file_path=file_path,
-            start_line=start_line,
-            end_line=end_line,
-            docstring=docstring,
-            parent_class=parent_class,
-            dependencies=dependencies,
-        )
-
-    def _extract_dependencies(self, node: ast.AST) -> List[str]:
-        """Extract dependencies (function calls, attribute access) from a node"""
-        dependencies = set()
-
-        for child in ast.walk(node):
-            if isinstance(child, ast.Call):
-                if isinstance(child.func, ast.Name):
-                    dependencies.add(child.func.id)
-                elif isinstance(child.func, ast.Attribute):
-                    dependencies.add(child.func.attr)
-            elif isinstance(child, ast.Attribute):
-                dependencies.add(child.attr)
-
-        return list(dependencies)
-
-
-class VectorStore:
-    """Vector storage and retrieval using ChromaDB"""
-
-    def __init__(self, persist_directory: str = "./chroma_db"):
-        self.client = chromadb.PersistentClient(path=persist_directory)
-        self.collection = self.client.get_or_create_collection(
-            name="code_chunks", metadata={"hnsw:space": "cosine"}
-        )
-        self.encoder = SentenceTransformer("all-MiniLM-L6-v2")
-
-    def add_chunks(self, chunks: List[CodeChunk]):
-        """Add code chunks to the vector store"""
-        documents = []
-        metadatas = []
-        ids = []
-
-        for i, chunk in enumerate(chunks):
-            # Create searchable text combining code and metadata
-            searchable_text = f"{chunk.chunk_type}: {chunk.name}\n"
-            if chunk.docstring:
-                searchable_text += f"Docstring: {chunk.docstring}\n"
-            searchable_text += f"Code:\n{chunk.content}"
-
-            documents.append(searchable_text)
-
-            metadata = {
-                "chunk_type": chunk.chunk_type,
-                "name": chunk.name,
-                "file_path": chunk.file_path,
-                "start_line": chunk.start_line,
-                "end_line": chunk.end_line,
-                "parent_class": chunk.parent_class or "",
-                "dependencies": json.dumps(chunk.dependencies),
-            }
-            metadatas.append(metadata)
-            ids.append(f"{chunk.file_path}:{chunk.start_line}:{chunk.name}")
-
-        if documents:
-            self.collection.add(documents=documents, metadatas=metadatas, ids=ids)
-
-    def search(self, query: str, n_results: int = 5) -> List[Dict[str, Any]]:
-        """Search for relevant code chunks"""
-        results = self.collection.query(query_texts=[query], n_results=n_results)
-
-        if (
-            not results["documents"]
-            or not results["metadatas"]
-            or not results["distances"]
-        ):
-            return []
-
-        return [
-            {"content": doc, "metadata": meta, "distance": dist}
-            for doc, meta, dist in zip(
-                results["documents"][0],
-                results["metadatas"][0],
-                results["distances"][0],
-            )
-        ]
-
-    def clear(self):
-        """Clear all data from the vector store"""
-        self.client.delete_collection("code_chunks")
-        self.collection = self.client.get_or_create_collection(
-            name="code_chunks", metadata={"hnsw:space": "cosine"}
-        )
-
-
 class RAGSystem:
-    """Retrieval Augmented Generation system for code Q&A"""
+    """Enhanced RAG system for code Q&A with backward compatibility"""
 
-    def __init__(self, repo_path: str, anthropic_api_key: Optional[str] = None):
+    def __init__(self, repo_path: str):
+        """
+        Initialize the RAG system.
+
+        Args:
+            repo_path: Path to the repository to index
+        """
         self.repo_path = Path(repo_path)
-        self.parser = CodeParser()
-        self.vector_store = VectorStore()
-        self.chunks = []
+        self.chunks = []  # Keep for compatibility with MCP server
+        self.repo_description = ""  # For enhanced context
+
+        anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
+
+        # Initialize text splitter with better parameters for code
+        self.text_splitter = PythonCodeTextSplitter(
+            chunk_size=1200,  # Balanced size for better context
+            chunk_overlap=250,  # Good overlap for continuity
+        )
+
+        # Initialize embeddings
+        self.embeddings = HuggingFaceEmbeddings(
+            model_name="sentence-transformers/all-MiniLM-L6-v2",
+            model_kwargs={"device": "cpu"},
+            encode_kwargs={"normalize_embeddings": True},
+        )
+
+        # Initialize vector store
+        self.vector_store = None
 
         # Initialize Claude LLM
-        anthropic_api_key = anthropic_api_key or os.getenv("ANTHROPIC_API_KEY")
         if not anthropic_api_key:
             logger.warning("No Anthropic API key provided. Using mock LLM for testing.")
             self.llm = None
@@ -295,158 +69,269 @@ class RAGSystem:
             self.llm = ChatAnthropic(
                 model_name="claude-3-5-sonnet-20241022",
                 api_key=SecretStr(anthropic_api_key),
-                temperature=0.3,
-                max_tokens_to_sample=1024,
-                timeout=30.0,
+                temperature=0.1,  # Lower temperature for more focused answers
+                max_tokens_to_sample=1500,  # More tokens for detailed explanations
+                timeout=45.0,
                 stop=None,
             )
 
-    def index_repository(self):
-        """Index the entire repository"""
-        logger.info(f"Indexing repository: {self.repo_path}")
+        # Enhanced QA prompt template
+        self.qa_prompt = PromptTemplate(
+            input_variables=["context", "question"],
+            template="""You are an expert Python code analyst. Your task is to answer questions about a codebase using the provided code snippets.
 
-        # Clear existing data
-        self.vector_store.clear()
-        self.chunks = []
+Retrieved Code Context:
+{context}
+
+Question: {question}
+
+Instructions for your response:
+1. Analyze the provided code snippets carefully
+2. Give a direct, clear answer to the question
+3. Reference specific files, functions, or classes when relevant
+4. Include relevant code examples if they help explain your answer
+5. If the code context doesn't fully answer the question, clearly state what information is missing
+6. Be precise and technical when discussing code implementation details
+
+Structure your response as:
+**Answer:** [Direct answer to the question]
+
+**Code Analysis:** [Analysis of relevant code with file references]
+
+**Details:** [Implementation specifics, if relevant]
+
+**Limitations:** [Note any missing information, if applicable]
+
+Response:""",
+        )
+
+    def _generate_repo_description(self, documents: List[Document]) -> str:
+        """Generate a simple description of the repository"""
+        file_count = len(documents)
+        directories = set()
+
+        for doc in documents:
+            file_path = doc.metadata.get("file_path", "")
+            if "/" in file_path:
+                directories.add(file_path.split("/")[0])
+
+        desc = f"Python repository with {file_count} files"
+        if directories:
+            desc += f" in directories: {', '.join(sorted(directories))}"
+
+        return desc
+
+    def index_repository(self):
+        """Index the entire repository - maintains original API"""
+        logger.info(f"Indexing repository: {self.repo_path}")
 
         # Find all Python files
         python_files = list(self.repo_path.rglob("*.py"))
         logger.info(f"Found {len(python_files)} Python files")
 
-        # Parse each file
+        # Create documents from Python files
+        documents = []
+
         for file_path in python_files:
             try:
-                file_chunks = self.parser.parse_file(str(file_path))
-                self.chunks.extend(file_chunks)
-                logger.info(f"Parsed {len(file_chunks)} chunks from {file_path}")
+                with open(file_path, "r", encoding="utf-8") as f:
+                    content = f.read()
+
+                # Skip empty files
+                if not content.strip():
+                    continue
+
+                # Create document with enhanced metadata (compatible with original)
+                doc = Document(
+                    page_content=content,
+                    metadata={
+                        "source": str(file_path),
+                        "file_name": file_path.name,
+                        "file_path": str(file_path.relative_to(self.repo_path)),
+                        "directory": str(file_path.relative_to(self.repo_path).parent),
+                    },
+                )
+                documents.append(doc)
+
             except Exception as e:
-                logger.error(f"Error processing {file_path}: {e}")
+                logger.error(f"Error reading {file_path}: {e}")
 
-        # Add to vector store
-        if self.chunks:
-            self.vector_store.add_chunks(self.chunks)
-            logger.info(f"Indexed {len(self.chunks)} total chunks")
+        if not documents:
+            logger.warning("No documents to index")
+            return
 
-    def answer_question(self, question: str) -> str:
-        """Answer a question about the codebase"""
-        # Retrieve relevant chunks
-        relevant_chunks = self.vector_store.search(question, n_results=10)
+        # Generate repository description for better context
+        self.repo_description = self._generate_repo_description(documents)
 
-        if not relevant_chunks:
-            return "I couldn't find relevant code to answer your question."
+        # Split documents into chunks
+        all_chunks = []
+        for doc in documents:
+            chunks = self.text_splitter.split_documents([doc])
+            # Add file metadata to each chunk and maintain compatibility
+            for chunk in chunks:
+                chunk.metadata.update(doc.metadata)
+            all_chunks.extend(chunks)
 
-        # Build context from retrieved chunks
+        logger.info(f"Created {len(all_chunks)} chunks from {len(documents)} documents")
+
+        # Store chunks for compatibility with MCP server
+        self.chunks = all_chunks
+
+        # Create vector store
+        persist_dir = "./chroma_db"
+        if os.path.exists(persist_dir):
+            # Clean restart for consistency
+            import shutil
+
+            shutil.rmtree(persist_dir)
+
+        self.vector_store = Chroma.from_documents(
+            documents=all_chunks,
+            embedding=self.embeddings,
+            persist_directory=persist_dir,
+        )
+        self.vector_store.persist()
+
+        logger.info(f"Indexed {len(all_chunks)} chunks successfully")
+
+    def _determine_chunk_type(self, content: str) -> str:
+        """Determine chunk type for MCP compatibility"""
+        content_lower = content.lower().strip()
+
+        if "class " in content_lower:
+            return "class"
+        elif "def " in content_lower:
+            return "function"
+        elif "import " in content_lower or "from " in content_lower:
+            return "import"
+        elif content_lower.startswith('"""') or content_lower.startswith("'''"):
+            return "docstring"
+        else:
+            return "code"
+
+    def _get_enhanced_context(self, question: str, k: int = 6) -> str:
+        """Get enhanced context with better formatting"""
+        if not self.vector_store:
+            return "No repository indexed."
+
+        try:
+            # Try similarity search with score threshold first
+            docs_and_scores = self.vector_store.similarity_search_with_score(
+                question, k=k
+            )
+
+            # Filter by relevance score (lower is better for cosine distance)
+            relevant_docs = [
+                (doc, score) for doc, score in docs_and_scores if score < 0.8
+            ]
+
+            if not relevant_docs:
+                # Fallback to regular search if no docs pass threshold
+                docs = self.vector_store.similarity_search(question, k=k)
+                relevant_docs = [(doc, 0.0) for doc in docs]
+
+        except Exception as e:
+            logger.warning(f"Search error, using fallback: {e}")
+            docs = self.vector_store.similarity_search(question, k=k)
+            relevant_docs = [(doc, 0.0) for doc in docs]
+
+        if not relevant_docs:
+            return "No relevant code found."
+
+        # Format context with clear structure
         context_parts = []
-        for chunk in relevant_chunks[:5]:  # Use top 5 most relevant
-            metadata = chunk["metadata"]
-            content = chunk["content"]
+        seen_files = set()
 
-            context_part = f"""
-File: {metadata['file_path']}
-Type: {metadata['chunk_type']}
-Name: {metadata['name']}
-{f"Class: {metadata['parent_class']}" if metadata['parent_class'] else ""}
+        for i, (doc, score) in enumerate(relevant_docs[:k], 1):
+            file_path = doc.metadata.get("file_path", "unknown")
 
-{content}
----
+            # Add file header only once per file
+            file_header = ""
+            if file_path not in seen_files:
+                seen_files.add(file_path)
+                file_header = f"\n=== File: {file_path} ===\n"
+
+            context_part = f"""{file_header}
+--- Code Snippet {i} ---
+{doc.page_content.strip()}
 """
             context_parts.append(context_part)
 
-        context = "\n".join(context_parts)
+        return "\n".join(context_parts)
 
-        # Generate answer with LLM
-        answer = self._generate_answer(question, context, relevant_chunks)
-
-        return answer
-
-    def _generate_answer(self, question: str, context: str, chunks: List[Dict]) -> str:
-        """Generate an answer based on the question and context using Claude"""
+    def answer_question(self, question: str) -> str:
+        if not self.vector_store:
+            return (
+                "No repository has been indexed yet. Please index a repository first."
+            )
 
         if not self.llm:
-            # Fallback to simple rule-based answer if no LLM available
-            return self._generate_simple_answer(question, context, chunks)
+            return (
+                "No LLM available. Please check your Anthropic API key configuration."
+            )
 
         try:
-            system_prompt = """You are a helpful code assistant analyzing a Python codebase. 
-Use the provided code snippets to answer questions about the codebase. 
-Be specific and reference the actual code when explaining concepts.
-If the provided context doesn't contain enough information to fully answer the question, 
-acknowledge what you can determine and what information is missing."""
+            context = self._get_enhanced_context(question)
 
-            user_prompt = f"""Based on the following code snippets from the repository, please answer this question: {question}
+            # Use the enhanced prompt
+            formatted_prompt = self.qa_prompt.format(context=context, question=question)
 
-Code context:
-{context}
+            # Get response from Claude
+            messages = [cast(BaseMessage, HumanMessage(content=formatted_prompt))]
+            response = self.llm(messages)
+            answer = response.content
 
-Please provide a clear and detailed answer based on the code provided."""
+            # Ensure answer is a string (handle list/dict cases)
+            if not isinstance(answer, str):
+                if isinstance(answer, list):
+                    # Join list elements as string
+                    answer = "\n".join(
+                        str(item) if isinstance(item, str) else str(item)
+                        for item in answer
+                    )
+                else:
+                    answer = str(answer)
 
-            messages = [
-                SystemMessage(content=system_prompt),
-                HumanMessage(content=user_prompt),
-            ]
+            # Add source information
+            if self.vector_store:
+                # Get source files from the retrieved context
+                docs = self.vector_store.similarity_search(question, k=5)
+                sources = set()
+                for doc in docs:
+                    if "file_path" in doc.metadata:
+                        sources.add(doc.metadata["file_path"])
 
-            response = self.llm.invoke(messages)
+                if sources:
+                    answer += f"\n\n**Sources:** {', '.join(sorted(sources))}"
 
-            # Add source files to the response
-            source_files = set()
-            for chunk in chunks[:5]:
-                source_files.add(chunk["metadata"]["file_path"])
-
-            if source_files:
-                response_content = response.content
-                if isinstance(response_content, list):
-                    response_content = "\n".join(str(item) for item in response_content)
-                response_content += (
-                    f"\n\nSource files: {', '.join(sorted(source_files))}"
-                )
-            else:
-                response_content = response.content
-                if isinstance(response_content, list):
-                    response_content = "\n".join(str(item) for item in response_content)
-
-            return response_content
+            return answer
 
         except Exception as e:
-            logger.error(f"Error generating answer with Claude: {e}")
-            return f"Error generating answer: {str(e)}"
+            logger.error(f"Error answering question: {e}")
+            return f"Error processing question: {str(e)}"
 
-    def _generate_simple_answer(
-        self, question: str, context: str, chunks: List[Dict]
-    ) -> str:
-        """Simple fallback answer generation without LLM"""
-        question_lower = question.lower()
 
-        if "what does" in question_lower and "class" in question_lower:
-            # Find class-related chunks
-            class_chunks = [c for c in chunks if c["metadata"]["chunk_type"] == "class"]
-            if class_chunks:
-                chunk = class_chunks[0]
-                metadata = chunk["metadata"]
-                return f"The class '{metadata['name']}' is defined in {metadata['file_path']}. Here's its implementation:\n\n{chunk['content']}"
+# Backward compatibility - keep the original class name available
+class ImprovedRAGSystem(RAGSystem):
+    """Alias for backward compatibility"""
 
-        elif "how is" in question_lower and "implement" in question_lower:
-            # Look for implementation details
-            relevant_chunk = chunks[0] if chunks else None
-            if relevant_chunk:
-                metadata = relevant_chunk["metadata"]
-                return f"The implementation can be found in {metadata['file_path']}:\n\n{relevant_chunk['content']}"
+    pass
 
-        elif "how does" in question_lower and "method" in question_lower:
-            # Look for method usage
-            method_chunks = [
-                c
-                for c in chunks
-                if c["metadata"]["chunk_type"] in ["method", "function"]
-            ]
-            if method_chunks:
-                chunk = method_chunks[0]
-                metadata = chunk["metadata"]
-                return f"The method '{metadata['name']}' works as follows:\n\n{chunk['content']}"
 
-        # Default response with most relevant chunk
-        if chunks:
-            chunk = chunks[0]
-            metadata = chunk["metadata"]
-            return f"Based on the code analysis, here's the relevant information from {metadata['file_path']}:\n\n{chunk['content']}"
+# Example usage
+if __name__ == "__main__":
+    # Test the improved system
+    rag = RAGSystem("grip-no-tests")
+    rag.index_repository()
 
-        return "I couldn't generate a specific answer for your question based on the available code."
+    # Test questions
+    test_questions = [
+        "How do I run grip from command line on a specific port?",
+    ]
+
+    for question in test_questions:
+        print(f"\nQ: {question}")
+        print("-" * 60)
+        answer = rag.answer_question(question)
+        print(answer)
+        print("=" * 80)

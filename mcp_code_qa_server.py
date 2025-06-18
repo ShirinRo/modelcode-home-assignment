@@ -60,11 +60,6 @@ async def list_tools() -> List[types.Tool]:
                 "required": ["question"],
             },
         ),
-        types.Tool(
-            name="get_repository_info",
-            description="Get information about the currently indexed repository",
-            inputSchema={"type": "object", "properties": {}, "required": []},
-        ),
     ]
 
 
@@ -91,8 +86,7 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
             return [
                 types.TextContent(
                     type="text",
-                    text=f"Successfully indexed repository at '{repo_path}'. "
-                    f"Found {len(rag_system.chunks)} code chunks.",
+                    text=f"Successfully indexed repository at '{repo_path}'. ",
                 )
             ]
         except Exception as e:
@@ -121,30 +115,13 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
                     type="text", text=f"Error answering question: {str(e)}"
                 )
             ]
-
-    elif name == "get_repository_info":
-        if rag_system is None:
-            return [
-                types.TextContent(
-                    type="text", text="No repository is currently indexed."
-                )
-            ]
-
-        chunk_stats = {}
-        for chunk in rag_system.chunks:
-            chunk_type = chunk.chunk_type
-            chunk_stats[chunk_type] = chunk_stats.get(chunk_type, 0) + 1
-
-        info = f"Repository: {rag_system.repo_path}\n"
-        info += f"Total chunks: {len(rag_system.chunks)}\n"
-        info += "Chunk types:\n"
-        for chunk_type, count in chunk_stats.items():
-            info += f"  - {chunk_type}: {count}\n"
-
-        return [types.TextContent(type="text", text=info)]
-
     else:
-        return [types.TextContent(type="text", text=f"Unknown tool: {name}")]
+        return [
+            types.TextContent(
+                type="text",
+                text="No such tool. Available tools: index_repository, ask_question",
+            )
+        ]
 
 
 async def main():
