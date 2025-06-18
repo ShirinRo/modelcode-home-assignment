@@ -1,6 +1,6 @@
 {
   "evaluation_metadata": {
-    "timestamp": "2025-06-18T15:22:36.161239",
+    "timestamp": "2025-06-18T15:42:03.642047",
     "repository_path": "grip-no-tests",
     "qa_source": "github",
     "qa_file": null,
@@ -9,53 +9,53 @@
       "judge"
     ],
     "total_questions": 10,
-    "avg_execution_time": 18.919468355178832
+    "avg_execution_time": 12.001697397232055
   },
   "summary_statistics": {
     "nlp": {
       "NLP Semantic Similarity": {
-        "average": 0.8077604711055756,
-        "median": 0.8211085200309753,
-        "min": 0.6985650658607483,
-        "max": 0.8819693326950073,
-        "std_dev": 0.06673180700837
+        "average": 0.8138389348983764,
+        "median": 0.8172754645347595,
+        "min": 0.7056206464767456,
+        "max": 0.89449143409729,
+        "std_dev": 0.06826028523691467
       },
       "NLP Rouge L": {
-        "average": 0.17658590886499542,
-        "median": 0.17094067043807565,
-        "min": 0.12389380530973453,
-        "max": 0.2701149425287356,
-        "std_dev": 0.04468611559645214
+        "average": 0.1788739389045724,
+        "median": 0.16791648858323296,
+        "min": 0.12844036697247707,
+        "max": 0.27565982404692085,
+        "std_dev": 0.04492951698501223
       },
       "NLP Overall Score": {
-        "average": 0.6184081024334015,
-        "median": 0.6222616456634235,
-        "min": 0.5339253432944114,
-        "max": 0.6949641299658808,
-        "std_dev": 0.04968564611675026
+        "average": 0.6233494361002352,
+        "median": 0.6259397492915406,
+        "min": 0.5404145136275098,
+        "max": 0.696916277597377,
+        "std_dev": 0.052172971120722396
       }
     },
     "judge": {
       "Judge Correctness": {
-        "average": 7.8,
+        "average": 7.9,
         "median": 7.5,
-        "min": 5,
+        "min": 6,
         "max": 10,
-        "std_dev": 1.6865480854231356
+        "std_dev": 1.3703203194062976
       },
       "Judge Completeness": {
-        "average": 7.3,
-        "median": 8.0,
+        "average": 7.4,
+        "median": 7.5,
         "min": 4,
         "max": 10,
-        "std_dev": 1.8287822299126937
+        "std_dev": 1.837873166945363
       },
       "Judge Clarity": {
-        "average": 8.7,
+        "average": 8.8,
         "median": 9.0,
-        "min": 7,
+        "min": 8,
         "max": 10,
-        "std_dev": 0.8232726023485646
+        "std_dev": 0.6324555320336759
       }
     }
   },
@@ -82,41 +82,41 @@
       "top": [
         {
           "question": "Where does `wait_for_server` function is defined and what is its purpose?",
-          "score": 0.6949641299658808,
-          "semantic_similarity": 0.8770423531532288,
-          "rouge_l": 0.2701149425287356
-        },
-        {
-          "question": "`DirectoryReader` - please explain the purpose of the class.",
-          "score": 0.6711828807125921,
-          "semantic_similarity": 0.8819693326950073,
-          "rouge_l": 0.1793478260869565
+          "score": 0.696916277597377,
+          "semantic_similarity": 0.8774547576904297,
+          "rouge_l": 0.27565982404692085
         },
         {
           "question": "which file import `browser.py`?",
-          "score": 0.6386152996855267,
-          "semantic_similarity": 0.8541961908340454,
-          "rouge_l": 0.13559322033898305
+          "score": 0.6754193661869435,
+          "semantic_similarity": 0.89449143409729,
+          "rouge_l": 0.1642512077294686
+        },
+        {
+          "question": "`DirectoryReader` - please explain the purpose of the class.",
+          "score": 0.6673225296885973,
+          "semantic_similarity": 0.8797828555107117,
+          "rouge_l": 0.17158176943699732
         }
       ],
       "bottom": [
         {
-          "question": "Can I modify and distribute the Grip software, and are there any conditions I need to follow?",
-          "score": 0.6001615389609714,
-          "semantic_similarity": 0.7586957812309265,
-          "rouge_l": 0.23024830699774268
+          "question": "How does Grip handle GitHub API authentication for rate limiting, and what happens when invalid credentials are provided? Please explain the authentication flow and error handling.",
+          "score": 0.6028084905003782,
+          "semantic_similarity": 0.7850602269172668,
+          "rouge_l": 0.17755443886097153
         },
         {
           "question": "How does Grip handle syntax highlighting for different programming languages in markdown code blocks, and what happens when an unmatched language is specified? Explain the rendering process with examples.",
-          "score": 0.5457755796713372,
-          "semantic_similarity": 0.7062938809394836,
-          "rouge_l": 0.17123287671232876
+          "score": 0.5422221237665986,
+          "semantic_similarity": 0.7056206464767456,
+          "rouge_l": 0.16095890410958905
         },
         {
           "question": "How does Grip handle the rendering of GitHub-style task lists with nested items, and what HTML structure does it generate? \nPlease provide an example of the Markdown input and corresponding HTML output.",
-          "score": 0.5339253432944114,
-          "semantic_similarity": 0.6985650658607483,
-          "rouge_l": 0.1497659906396256
+          "score": 0.5404145136275098,
+          "semantic_similarity": 0.7079592347145081,
+          "rouge_l": 0.14947683109118085
         }
       ]
     },
@@ -126,12 +126,12 @@
         "percentage": 70.0
       },
       "good": {
-        "count": 2,
-        "percentage": 20.0
+        "count": 3,
+        "percentage": 30.0
       },
       "fair": {
-        "count": 1,
-        "percentage": 10.0
+        "count": 0,
+        "percentage": 0.0
       },
       "poor": {
         "count": 0,
@@ -141,18 +141,18 @@
     "judge_performers": {
       "top": [
         {
+          "question": "Where does `wait_for_server` function is defined and what is its purpose?",
+          "average_score": 9.666666666666666,
+          "correctness": 9,
+          "completeness": 10,
+          "clarity": 10
+        },
+        {
           "question": "what are the `SUPPORTED_EXTENSIONS` and where are they defined?",
           "average_score": 9.666666666666666,
           "correctness": 10,
           "completeness": 10,
           "clarity": 9
-        },
-        {
-          "question": "Where does `wait_for_server` function is defined and what is its purpose?",
-          "average_score": 9.333333333333334,
-          "correctness": 9,
-          "completeness": 9,
-          "clarity": 10
         },
         {
           "question": "which file import `browser.py`?",
@@ -172,17 +172,17 @@
         },
         {
           "question": "How does Grip handle syntax highlighting for different programming languages in markdown code blocks, and what happens when an unmatched language is specified? Explain the rendering process with examples.",
-          "average_score": 6.333333333333333,
-          "correctness": 6,
-          "completeness": 5,
+          "average_score": 7,
+          "correctness": 7,
+          "completeness": 6,
           "clarity": 8
         },
         {
           "question": "How does Grip handle the rendering of GitHub-style task lists with nested items, and what HTML structure does it generate? \nPlease provide an example of the Markdown input and corresponding HTML output.",
-          "average_score": 5.333333333333333,
-          "correctness": 5,
+          "average_score": 6,
+          "correctness": 6,
           "completeness": 4,
-          "clarity": 7
+          "clarity": 8
         }
       ]
     }
@@ -191,12 +191,12 @@
     {
       "question": "How do I run grip from command line on a specific port?",
       "reference_answer": "To run Grip from the command line on a specific port, you can specify the port number as an argument. \n\nHere\u2019s how you do it:\n\n$ grip 80\n * Running on http://localhost:80/\n\nThis command starts the Grip server on port 80. You can replace 80 with any desired port number.\n\nreference:\n\n```markdown:README.md\n    You can also specify a port:\n    ```console\n    $ grip 80\n    * Running on http://localhost:80/\n    ```\n```",
-      "generated_answer": "**Answer:**\nYou can run grip on a specific port by specifying the port number as the second argument after the path. For example:\n```bash\ngrip path/to/file.md 8080\n# or\ngrip path/to/file.md localhost:8080\n```\n\n**Code Analysis:**\nFrom the code in `grip/command.py`, the command-line interface documentation shows that grip accepts two optional arguments:\n- `<path>`: the file to render or directory containing README.md\n- `<address>`: can be specified as either just a port number or as `host:port`\n\nThe usage pattern shown in the docstring:\n```\ngrip [options] [<path>] [<address>]\n```\nindicates that both path and address are optional parameters, with address being the second positional argument.\n\n**Details:**\nThe address parameter can be specified in two formats:\n1. Just the port number (e.g., `8080`)\n2. Full host:port combination (e.g., `localhost:8080`)\n\nIf no address is specified, grip will use its default port (typically 6419, though this isn't shown in the provided code snippet).\n\n**Limitations:**\n- The provided code snippet doesn't show the actual port binding implementation or the default port number\n- The complete list of supported options (`[options]`) isn't shown in the provided snippet\n- The validation logic for port numbers (valid range, etc.) isn't visible in the provided code\n\n**Sources:** grip/__init__.py, grip/__main__.py, grip/app.py, grip/command.py, grip/constants.py",
-      "execution_time": 30.579219102859497,
+      "generated_answer": "**Answer:**\nYou can run grip on a specific port by specifying the port number as the second argument after the path. For example:\n```bash\ngrip path/to/file.md 8080\n# or\ngrip path/to/file.md localhost:8080\n```\n\n**Code Analysis:**\nFrom the code in `grip/command.py`, the command-line interface documentation shows that grip accepts two optional arguments:\n- `<path>`: The file to render or directory containing README.md\n- `<address>`: Can be specified as either just a port number or as `host:port`\n\nThe usage pattern shown in the docstring:\n```\ngrip [options] [<path>] [<address>]\n```\nindicates that both path and address are optional arguments, with address being the second positional argument.\n\n**Details:**\nThe address parameter can be specified in two formats:\n1. Just the port number (e.g., `8080`)\n2. Full host:port format (e.g., `localhost:8080` or `127.0.0.1:8080`)\n\n**Limitations:**\nThe provided code snippet only shows the command-line interface documentation. The actual port handling implementation is not visible in the given context. To provide more specific details about:\n- Default port if none specified\n- Valid port ranges\n- How the port binding actually works\nwe would need to see additional code from the implementation.\n\n**Sources:** grip/__init__.py, grip/__main__.py, grip/app.py, grip/command.py, grip/constants.py",
+      "execution_time": 11.286380052566528,
       "nlp_scores": {
-        "semantic_similarity": 0.8176614046096802,
-        "rouge_l": 0.17064846416382254,
-        "overall_score": 0.6235575224759228
+        "semantic_similarity": 0.8212928771972656,
+        "rouge_l": 0.1773049645390071,
+        "overall_score": 0.6280965033997881
       },
       "judge_scores": {
         "correctness": 7,
@@ -207,44 +207,44 @@
     {
       "question": "Can I modify and distribute the Grip software, and are there any conditions I need to follow?",
       "reference_answer": "Yes, you are allowed to modify and distribute the Grip software under the terms of its license. The license grants you the rights to use, copy, modify, merge, publish, distribute, sublicense, and sell copies of the software. However, there are conditions you must follow:\n1.\tInclude the Copyright Notice \u2013 Any copies or substantial portions of the software must retain the original copyright notice:\n\n        Copyright (c) 2014-2022 Joe Esposito <joe@joeyespo.com>\n\n\n2.\tInclude the Permission Notice \u2013 The permission notice that grants these rights must be included in all distributions of the software.\n3.\tNo Warranty \u2013 The software is provided \u201cas is,\u201d without any warranty of any kind, either express or implied. This means the authors are not responsible for any issues, damages, or liabilities arising from its use.\n\nThese conditions allow you to freely use and modify the software while ensuring that the original author receives proper credit and that users understand the limitations of liability.",
-      "generated_answer": "**Answer:** Yes, you can modify and distribute the Grip software because it uses the MIT license, as indicated in both `grip/__main__.py` and `grip/__init__.py`. The MIT license allows you to modify and distribute the software, provided you include the original copyright notice and license.\n\n**Code Analysis:**\nFrom `grip/__main__.py` and `grip/__init__.py`:\n```python\n\"\"\"\\\nGrip\n----\n\nRender local readme files before sending off to GitHub.\n\n:copyright: (c) 2014-2022 by Joe Esposito.\n:license: MIT, see LICENSE for more details.\n\"\"\"\n```\n\nThe license information is clearly stated in the docstrings of multiple files, indicating that Grip is MIT-licensed software. The copyright holder is Joe Esposito, and the copyright period extends from 2014-2022.\n\n**Details:**\nUnder the MIT license, you must:\n1. Keep the copyright notice and license when distributing the code\n2. Include the MIT license text with your distribution\n3. You can make modifications, use the code commercially, and distribute it\n4. The original author provides no warranty or liability\n\n**Limitations:**\n- The actual LICENSE file referenced in the docstring (\"see LICENSE for more details\") is not included in the provided code snippets\n- While we can see the copyright notice and license type, we cannot see the full license text that would normally be included in the project's LICENSE file\n- The specific version of the MIT license being used isn't visible in the provided snippets, though we can see from `__init__.py` that the current version of Grip is 4.6.2\n\nThe core licensing information is clear, but for complete compliance details, you would want to reference the full LICENSE file in the project repository.\n\n**Sources:** grip/__init__.py, grip/__main__.py, grip/api.py, grip/command.py, grip/constants.py",
-      "execution_time": 27.685322999954224,
+      "generated_answer": "**Answer:** Yes, you can modify and distribute the Grip software because it uses the MIT license, as indicated in both `grip/__main__.py` and `grip/__init__.py`. The MIT license allows you to modify and distribute the software, provided you include the original copyright notice and license.\n\n**Code Analysis:**\nFrom `grip/__main__.py` and `grip/__init__.py`:\n```python\n\"\"\"\\\nGrip\n----\n\nRender local readme files before sending off to GitHub.\n\n:copyright: (c) 2014-2022 by Joe Esposito.\n:license: MIT, see LICENSE for more details.\n\"\"\"\n```\n\nThe license information is clearly stated in the docstrings of multiple files, indicating that the software is released under the MIT license with copyright held by Joe Esposito.\n\n**Details:**\nUnder the MIT license, you must:\n1. Keep the copyright notice and license when distributing\n2. Include the original license text with any substantial portions of the software\n3. Acknowledge the original author (Joe Esposito)\n\nThe software version is specified in `grip/__init__.py`:\n```python\n__version__ = '4.6.2'\n```\nThis version information should be updated appropriately if you make modifications and distribute your own version.\n\n**Limitations:**\nWhile the code snippets show the license type, the full license text (typically found in a LICENSE file) is not included in the provided code context. The exact text of the license would provide the complete terms and conditions for modification and distribution. However, since it's explicitly stated to be MIT licensed, the standard MIT license terms would apply.\n\n**Sources:** grip/__init__.py, grip/__main__.py, grip/api.py, grip/command.py, grip/constants.py",
+      "execution_time": 11.124680042266846,
       "nlp_scores": {
-        "semantic_similarity": 0.7586957812309265,
-        "rouge_l": 0.23024830699774268,
-        "overall_score": 0.6001615389609714
+        "semantic_similarity": 0.7886795401573181,
+        "rouge_l": 0.23902439024390243,
+        "overall_score": 0.6237829951832933
       },
       "judge_scores": {
-        "correctness": 9,
-        "completeness": 8,
+        "correctness": 8,
+        "completeness": 7,
         "clarity": 9
       }
     },
     {
       "question": "Where does `wait_for_server` function is defined and what is its purpose?",
       "reference_answer": "The `wait_for_server` function, defined in `grip/browser.py`, waits until a local server starts listening on a given host and port. It repeatedly checks using `is_server_running`, sleeping for 0.1 seconds between attempts. If a `cancel_event` is provided and set, it exits early. It returns True when the server is ready. This function is used in `wait_and_start_browser` to ensure the server is running before opening the browser.",
-      "generated_answer": "**Answer:**\nThe `wait_for_server` function is defined in `grip/browser.py` and its purpose is to block execution until a server becomes available on the specified host and port. It continuously checks if a server is listening at the given address, with support for cancellation through an optional cancel event.\n\n**Code Analysis:**\nFrom `grip/browser.py`:\n```python\ndef wait_for_server(host, port, cancel_event=None):\n    \"\"\"\n    Blocks until a local server is listening on the specified\n    host and port. Set cancel_event to cancel the wait.\n\n    This is intended to be used in conjunction with running\n    the Flask server.\n    \"\"\"\n    while not is_server_running(host, port):\n        # Stop waiting if shutting down\n        if cancel_event and cancel_event.is_set():\n            return False\n        time.sleep(0.1)\n    return True\n```\n\nThe function is used in conjunction with `wait_and_start_browser` and ultimately `start_browser_when_ready`, which creates a daemon thread to wait for the server to become available before opening a browser window.\n\n**Details:**\n- The function uses a while loop that checks server availability using `is_server_running`\n- It includes a cancellation mechanism through `cancel_event` parameter\n- It has a sleep interval of 0.1 seconds between checks to prevent CPU overuse\n- Returns True if the server becomes available, False if cancelled\n- Used primarily as part of the browser launching functionality in the Grip application\n\n**Limitations:**\nThe code snippets show the complete implementation and usage context. However, it's worth noting that the actual timeout duration isn't configurable - it will keep trying indefinitely unless cancelled through the cancel_event.\n\n**Sources:** grip/api.py, grip/app.py, grip/browser.py, grip/command.py",
-      "execution_time": 15.397567987442017,
+      "generated_answer": "**Answer:**\nThe `wait_for_server` function is defined in `grip/browser.py` and its purpose is to block execution until a server becomes available on the specified host and port. It continuously checks if a server is listening at the given address, with optional cancellation support.\n\n**Code Analysis:**\nFrom `grip/browser.py`:\n```python\ndef wait_for_server(host, port, cancel_event=None):\n    \"\"\"\n    Blocks until a local server is listening on the specified\n    host and port. Set cancel_event to cancel the wait.\n\n    This is intended to be used in conjunction with running\n    the Flask server.\n    \"\"\"\n    while not is_server_running(host, port):\n        # Stop waiting if shutting down\n        if cancel_event and cancel_event.is_set():\n            return False\n        time.sleep(0.1)\n    return True\n```\n\nThe function is used in conjunction with `wait_and_start_browser` and ultimately `start_browser_when_ready`, which creates a daemon thread to wait for the server to become available before opening a browser window.\n\n**Details:**\n- The function uses a while loop to continuously check server availability\n- It polls every 0.1 seconds using `time.sleep(0.1)`\n- Takes three parameters:\n  - `host`: The server hostname to check\n  - `port`: The port number to check\n  - `cancel_event`: Optional threading.Event for cancellation\n- Returns:\n  - `True` if the server becomes available\n  - `False` if cancelled via cancel_event\n- Uses `is_server_running()` helper function to check server availability through socket connection\n\n**Limitations:**\nThe code context shows the complete implementation and usage of this function. No significant information appears to be missing from the provided snippets.\n\n**Sources:** grip/api.py, grip/app.py, grip/browser.py, grip/command.py",
+      "execution_time": 12.700799226760864,
       "nlp_scores": {
-        "semantic_similarity": 0.8770423531532288,
-        "rouge_l": 0.2701149425287356,
-        "overall_score": 0.6949641299658808
+        "semantic_similarity": 0.8774547576904297,
+        "rouge_l": 0.27565982404692085,
+        "overall_score": 0.696916277597377
       },
       "judge_scores": {
         "correctness": 9,
-        "completeness": 9,
+        "completeness": 10,
         "clarity": 10
       }
     },
     {
       "question": "which file import `browser.py`?",
       "reference_answer": "The file `grip/app.py` imports `browser.py`.\n\nreference:\n```python:grip/app.py\nfrom .browser import start_browser_when_ready\n```",
-      "generated_answer": "**Answer:** Based on the provided code snippets, `grip/app.py` imports the browser module.\n\n**Code Analysis:** \nIn `grip/app.py`, we can see the following import statement:\n```python\nfrom .browser import start_browser_when_ready\n```\nThis shows that the browser module is imported by the main app module of the Grip application.\n\n**Details:**\nThe import is specifically importing the `start_browser_when_ready` function, which is defined in `browser.py`. This function is used to launch a web browser when the Grip server is ready, as shown in the browser.py implementation:\n```python\ndef start_browser_when_ready(host, port=None, cancel_event=None):\n    browser_thread = Thread(\n        target=wait_and_start_browser, args=(host, port, cancel_event))\n    browser_thread.daemon = True\n    browser_thread.start()\n    return browser_thread\n```\n\n**Limitations:**\n- The provided code snippets only show a portion of the codebase, so there might be other files that import browser.py that aren't shown in the given context\n- We don't have access to the complete import statements from all project files, so there could be additional imports we're not aware of\n- The actual usage of the imported `start_browser_when_ready` function in app.py is not shown in the provided snippets\n\n**Sources:** grip/app.py, grip/browser.py, grip/vendor/six.py, setup.py",
-      "execution_time": 13.827008962631226,
+      "generated_answer": "**Answer:** Based on the provided code snippets, `grip/app.py` imports the browser module.\n\n**Code Analysis:** \nFrom `grip/app.py`, we can see the explicit import statement:\n```python\nfrom .browser import start_browser_when_ready\n```\n\nThis shows that `app.py` imports specifically the `start_browser_when_ready` function from the browser module.\n\n**Details:**\nThe import is a relative import (using the `.` notation), indicating that both `app.py` and `browser.py` are in the same package (grip). The `start_browser_when_ready` function that's imported is clearly defined in `browser.py` as shown in Code Snippet 4.\n\n**Limitations:**\n- The provided code snippets might not show all possible files that could import browser.py\n- We only have partial code from the codebase, so there could be other files in the grip package that also import browser.py that aren't shown in the provided snippets\n- The setup.py suggests this is a larger package with more files than what we can see in the snippets, so there could be additional imports elsewhere in the codebase\n\n**Sources:** grip/app.py, grip/browser.py, grip/vendor/six.py, setup.py",
+      "execution_time": 9.00311279296875,
       "nlp_scores": {
-        "semantic_similarity": 0.8541961908340454,
-        "rouge_l": 0.13559322033898305,
-        "overall_score": 0.6386152996855267
+        "semantic_similarity": 0.89449143409729,
+        "rouge_l": 0.1642512077294686,
+        "overall_score": 0.6754193661869435
       },
       "judge_scores": {
         "correctness": 10,
@@ -255,12 +255,12 @@
     {
       "question": "what are the `SUPPORTED_EXTENSIONS` and where are they defined?",
       "reference_answer": "The `SUPPORTED_EXTENSIONS` is a list of supported file extensions for the Grip application. It is defined in `grip/constants.py`.\n\nreference:\n```python:grip/constants.py\nSUPPORTED_EXTENSIONS = ['.md', '.markdown']\n```",
-      "generated_answer": "**Answer:**\nThe `SUPPORTED_EXTENSIONS` are defined in `grip/constants.py` as a list containing two markdown file extensions: `.md` and `.markdown`\n\n**Code Analysis:**\nFrom `grip/constants.py`:\n```python\nSUPPORTED_EXTENSIONS = ['.md', '.markdown']\n```\n\nThis constant is used in conjunction with `SUPPORTED_TITLES` to generate `DEFAULT_FILENAMES`. The definition appears in the same file:\n```python\nDEFAULT_FILENAMES = [title + ext\n                     for title in SUPPORTED_TITLES\n                     for ext in SUPPORTED_EXTENSIONS]\n```\n\nThe extensions are used by the `DirectoryReader` class (in `grip/readers.py`) when searching for README files in a directory. They represent the file extensions that GitHub officially supports for markdown files.\n\n**Details:**\n- The extensions are used to create combinations with supported titles (README, Readme, readme, Home)\n- This results in valid filenames like:\n  - README.md\n  - README.markdown\n  - Readme.md\n  - Readme.markdown\n  etc.\n- These extensions are referenced in `__all__` in `grip/__init__.py`, making them part of the public API\n\n**Limitations:**\nThe code snippets don't show where these extensions are actually validated or processed during markdown rendering. Additional code would be needed to see how the `GitHubRenderer` or other components handle these file extensions during the actual markdown processing.\n\n**Sources:** grip/__init__.py, grip/app.py, grip/constants.py, grip/renderers.py, grip/vendor/six.py",
-      "execution_time": 18.580103874206543,
+      "generated_answer": "**Answer:**\nThe `SUPPORTED_EXTENSIONS` are defined in `grip/constants.py` as a list containing two markdown file extensions: `.md` and `.markdown`\n\n**Code Analysis:**\nFrom `grip/constants.py`:\n```python\nSUPPORTED_EXTENSIONS = ['.md', '.markdown']\n```\n\nThis constant is used in conjunction with `SUPPORTED_TITLES` to generate `DEFAULT_FILENAMES`. The definition appears in the same file:\n```python\nDEFAULT_FILENAMES = [title + ext\n                     for title in SUPPORTED_TITLES\n                     for ext in SUPPORTED_EXTENSIONS]\n```\n\nThe extensions are used by the `DirectoryReader` class (in `grip/readers.py`) when searching for README files in a directory. They represent the file extensions that GitHub officially supports for markdown files.\n\n**Details:**\n- The extensions are used to identify valid markdown files\n- They are combined with supported titles (README, Readme, readme, Home) to create valid default filenames\n- The comment in the code indicates these extensions are defined according to GitHub's markup specifications\n- The constant is exported in `grip/__init__.py`'s `__all__` list, making it available when importing from the grip package\n\n**Limitations:**\nWhile we can see where the extensions are defined and how they're used in file discovery, we don't see the complete implementation of how these extensions are validated or processed in the actual markdown rendering pipeline, as that would likely be in other parts of the codebase not shown in the provided snippets.\n\n**Sources:** grip/__init__.py, grip/app.py, grip/constants.py, grip/renderers.py, grip/vendor/six.py",
+      "execution_time": 11.057591915130615,
       "nlp_scores": {
-        "semantic_similarity": 0.8245556354522705,
-        "rouge_l": 0.14592274678111586,
-        "overall_score": 0.6209657688509241
+        "semantic_similarity": 0.8132580518722534,
+        "rouge_l": 0.1444866920152091,
+        "overall_score": 0.6126266439151401
       },
       "judge_scores": {
         "correctness": 10,
@@ -271,12 +271,12 @@
     {
       "question": "what is ReadmeNotFoundError exception? Please give a usage example.",
       "reference_answer": "An error, defined in `grip/exceptions.py`, that is raised when the specified Readme could not be found.\nIt is a subclass of `NotFoundError`.\n\nAn example usage can be found in `readers.py` in the `readme_for` method of the `DirectoryReader` class:\n```python:grip/readers.py\n    def readme_for(self, subpath):\n        ...\n        # Check for existence\n        if not os.path.exists(filename):\n            raise ReadmeNotFoundError(filename)\n        ...\n```",
-      "generated_answer": "**Answer:**\nReadmeNotFoundError is a custom exception that inherits from FileNotFoundError (Python 3) or IOError (Python 2) and is used when a README file cannot be found in the expected location. It includes additional context like the path where the README was searched for and an optional custom message.\n\n**Code Analysis:**\nFrom `grip/exceptions.py`, ReadmeNotFoundError is defined with:\n- Inheritance from NotFoundError (which is aliased to FileNotFoundError or IOError depending on Python version)\n- Custom initialization with optional path and message parameters\n- Custom string representation methods (__repr__ and __str__)\n\nThe exception is used in several places in the codebase:\n1. In `TextReader.read()` when attempting to access subpaths\n2. In `DirectoryReader._find_file()` when no README file is found\n3. In file reading operations when encountering ENOENT (No such file or directory) errors\n\n**Details:**\nUsage example:\n```python\n# Example 1: Basic usage\nraise ReadmeNotFoundError('/path/to/missing/readme')\n\n# Example 2: With custom message\nraise ReadmeNotFoundError('/path/to/readme', 'Custom error message')\n\n# Example 3: How it's used in the codebase\ntry:\n    readme_path = reader._find_file('/some/path')\nexcept ReadmeNotFoundError as e:\n    print(str(e))  # Will print: \"No README found at /some/path\"\n```\n\nThe exception provides three ways to get the error message:\n1. Custom message if provided\n2. Formatted path message if path is provided\n3. Default strerror from parent class\n\n**Limitations:**\nThe code snippets show the exception definition and usage, but don't provide complete context about:\n1. The full set of README file patterns that are searched for\n2. The complete error handling strategy across the entire application\n3. Whether there are other related exceptions in the error hierarchy\n\n**Sources:** grip/exceptions.py, grip/readers.py",
-      "execution_time": 16.382410049438477,
+      "generated_answer": "**Answer:**\nReadmeNotFoundError is a custom exception that inherits from FileNotFoundError (Python 3) or IOError (Python 2) and is used when a README file cannot be found in the expected location. It includes additional context like the path where the README was searched for and an optional custom message.\n\n**Code Analysis:**\nFrom `grip/exceptions.py`, ReadmeNotFoundError is defined with:\n- Inheritance from NotFoundError (which is aliased to FileNotFoundError or IOError)\n- Custom initialization with optional path and message parameters\n- Custom string representation methods\n\nThe exception is used in several places in the codebase:\n1. In `TextReader.read()` when attempting to access subpaths\n2. In `DirectoryReader._find_file()` when no README file is found\n3. In file reading operations when encountering ENOENT (No such file or directory) errors\n\n**Details:**\nUsage example:\n```python\n# Example 1: Basic usage\ntry:\n    reader = DirectoryReader(\"/path/to/directory\")\nexcept ReadmeNotFoundError as e:\n    print(str(e))  # Outputs: \"No README found at /path/to/directory\"\n\n# Example 2: Custom message\nraise ReadmeNotFoundError(\n    path=\"/some/path\",\n    message=\"Custom README not found message\"\n)\n\n# Example 3: As seen in TextReader\nif subpath is not None:\n    raise ReadmeNotFoundError(subpath)\n```\n\nThe exception provides three ways to get the error message:\n1. Custom message if provided\n2. Formatted path message if path is provided\n3. Default strerror from parent class\n\n**Limitations:**\nThe code snippets show the exception being raised in several contexts, but we don't see all possible use cases. The complete set of situations where this exception might be raised would require reviewing the entire codebase, particularly around file operations and README file handling.\n\n**Sources:** grip/exceptions.py, grip/readers.py",
+      "execution_time": 11.883836269378662,
       "nlp_scores": {
-        "semantic_similarity": 0.8582906126976013,
-        "rouge_l": 0.12389380530973453,
-        "overall_score": 0.6379715704812412
+        "semantic_similarity": 0.8647897243499756,
+        "rouge_l": 0.12844036697247707,
+        "overall_score": 0.643884917136726
       },
       "judge_scores": {
         "correctness": 7,
@@ -287,12 +287,12 @@
     {
       "question": "`DirectoryReader` - please explain the purpose of the class.",
       "reference_answer": "The `DirectoryReader` class, defined in `grip/readers.py`, is a subclass of `ReadmeReader` that reads README files from a directory. It locates a README file, normalizes paths, and provides methods to read file content (text or binary), determine file types, and track last modification times. It ensures safe access by preventing traversal outside the root directory. If no README is found, it either returns a default filename (if silent=True) or raises `ReadmeNotFoundError`.",
-      "generated_answer": "**Answer:**\nThe `DirectoryReader` class is a specialized implementation of `ReadmeReader` that handles reading README files from local filesystem directories. Its primary purpose is to locate and read README files either from a specified path or from the current working directory, supporting various default README filenames.\n\n**Code Analysis:**\nFrom `grip/readers.py`, the `DirectoryReader` class inherits from `ReadmeReader` and implements specific directory-based README file handling:\n\n```python\nclass DirectoryReader(ReadmeReader):\n    def __init__(self, path=None, silent=False):\n        super(DirectoryReader, self).__init__()\n        root_filename = os.path.abspath(self._resolve_readme(path, silent))\n        self.root_filename = root_filename\n        self.root_directory = os.path.dirname(root_filename)\n```\n\nThe class provides two key internal methods:\n1. `_find_file()`: Searches for README files in a given directory using predefined filenames\n2. `_resolve_readme()`: Resolves the actual README file path, handling both direct file paths and directory paths\n\n**Details:**\nThe implementation includes several important features:\n- Handles both explicit file paths and directory paths\n- Supports silent mode where it returns defaults instead of raising errors\n- Uses absolute paths internally (`os.path.abspath`)\n- Maintains both the root filename and root directory information\n- Works with the current working directory when no path is specified\n- Integrates with the broader Grip application, as seen in `grip/app.py` where it's used as the default source reader\n\nExample usage from `grip/app.py`:\n```python\nif source is None or isinstance(source, str_type):\n    source = DirectoryReader(source)\n```\n\n**Limitations:**\nWhile the code context is fairly complete, a few details are not visible in the provided snippets:\n- The actual list of `DEFAULT_FILENAMES` is not shown\n- The implementation of the read operation itself is not visible\n- Any potential additional methods inherited from `ReadmeReader` that might be overridden are not shown in the snippets\n\n**Sources:** grip/app.py, grip/readers.py",
-      "execution_time": 19.96342396736145,
+      "generated_answer": "**Answer:**\nThe `DirectoryReader` class is a specialized implementation of `ReadmeReader` that handles reading README files from local filesystem directories. Its primary purpose is to locate and read README files either from a specified path or from the current working directory, supporting multiple default README filenames.\n\n**Code Analysis:**\nFrom `grip/readers.py`, the `DirectoryReader` class inherits from `ReadmeReader` and implements specific directory-based README file handling:\n\n```python\nclass DirectoryReader(ReadmeReader):\n    def __init__(self, path=None, silent=False):\n        super(DirectoryReader, self).__init__()\n        root_filename = os.path.abspath(self._resolve_readme(path, silent))\n        self.root_filename = root_filename\n        self.root_directory = os.path.dirname(root_filename)\n```\n\nThe class provides two key internal methods:\n1. `_find_file()`: Searches for README files in a given path using predefined filenames\n2. `_resolve_readme()`: Determines the actual README file path, handling both direct file paths and directory paths\n\n**Details:**\nThe implementation includes several important features:\n- Supports finding README files using multiple default filenames (referenced as `DEFAULT_FILENAMES`)\n- Handles both explicit file paths and directory paths\n- Provides a \"silent\" mode that returns default values instead of raising exceptions\n- Normalizes paths for consistency\n- Stores both the absolute path of the README file (`root_filename`) and its containing directory (`root_directory`)\n\nThe class is used as the default reader in the `Grip` application (from `grip/app.py`):\n```python\nif source is None or isinstance(source, str_type):\n    source = DirectoryReader(source)\n```\n\n**Limitations:**\nWhile the code context shows the core functionality, a few pieces of information are not visible in the provided snippets:\n1. The actual list of `DEFAULT_FILENAMES` is not shown\n2. The implementation of the `read()` method (inherited from `ReadmeReader`) is not visible\n3. The complete set of supported file types and how they are handled is not shown in the snippets\n\n**Sources:** grip/app.py, grip/readers.py",
+      "execution_time": 14.663889169692993,
       "nlp_scores": {
-        "semantic_similarity": 0.8819693326950073,
-        "rouge_l": 0.1793478260869565,
-        "overall_score": 0.6711828807125921
+        "semantic_similarity": 0.8797828555107117,
+        "rouge_l": 0.17158176943699732,
+        "overall_score": 0.6673225296885973
       },
       "judge_scores": {
         "correctness": 8,
@@ -303,28 +303,28 @@
     {
       "question": "How does Grip handle the rendering of GitHub-style task lists with nested items, and what HTML structure does it generate? \nPlease provide an example of the Markdown input and corresponding HTML output.",
       "reference_answer": "Let me explain how Grip handles GitHub-style task lists by analyzing the test files and HTML output structure:\n\nThe input Markdown for nested task lists looks like this:\n\n```markdown\n- [ ] a bigger project\n  - [x] first subtask #1234\n  - [ ] follow up subtask #4321\n  - [ ] final subtask cc @mention\n- [x] a separate task\n```\n\nGrip generates specific HTML structure for these task lists, as shown in the test output:\n\n\n```664:666:tests/output/app/gfm-test-user-content.html\n<ul class=\"task-list\">\n<li class=\"task-list-item\">\n<input type=\"checkbox\" class=\"task-list-item-checkbox\" disabled> a bigger project\n```\n\n\nThe key elements of the HTML structure are:\n\n1. Task lists get the class `task-list`\n2. Each list item gets the class `task-list-item`\n3. Checkboxes are rendered as `input` elements with:\n   - type=\"checkbox\"\n   - class=\"task-list-item-checkbox\"\n   - disabled attribute\n   - checked attribute for completed tasks\n\nFor nested lists, Grip maintains the hierarchy by:\n\n\n```466:474:tests/output/renderer/gfm-test-user-context.html\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\"> a bigger project\n<ul class=\"contains-task-list\">\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> first subtask #1234</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\"> follow up subtask #4321</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\"> final subtask cc @mention</li>\n</ul>\n</li>\n<li class=\"task-list-item\"><input type=\"checkbox\" id=\"\" disabled=\"\" class=\"task-list-item-checkbox\" checked=\"\"> a separate task</li>\n```\n\n\nThis shows that:\n\n1. The parent list contains the nested list within its `li` element\n2. The nested list maintains all the same task list classes and structure\n3. Each level preserves the checkbox state (checked/unchecked)\n4. References like #1234 and @mention are properly linked in the HTML output\n\nThis implementation matches GitHub's own rendering of task lists, ensuring compatibility and consistent appearance when viewing markdown files either on GitHub or through Grip's local preview.",
-      "generated_answer": "**Answer:**\nBased on the provided code snippets, I cannot definitively determine how Grip handles GitHub-style task lists with nested items. The code shows that Grip uses GitHub's Markdown API for rendering (via the GitHubRenderer class), but the specific task list rendering implementation is not visible in the provided code.\n\n**Code Analysis:**\nFrom the code snippets, we can see that:\n\n1. In `grip/renderers.py`, the `GitHubRenderer` class is responsible for rendering Markdown content:\n```python\nclass GitHubRenderer(ReadmeRenderer):\n    def render(self, text, auth=None):\n        # Only validates that text is Unicode\n        # Actual rendering implementation not shown\n```\n\n2. The renderer appears to delegate the actual Markdown processing to GitHub's API, as indicated by:\n- The use of `DEFAULT_API_URL = 'https://api.github.com'` in `constants.py`\n- The GitHubRenderer class accepting an `api_url` parameter\n\n**Details:**\nThe actual rendering process would likely involve:\n1. Sending the Markdown content to GitHub's API\n2. Receiving the rendered HTML response\n3. Potentially applying additional styling or processing\n\nHowever, the specific API endpoint used and the transformation process is not visible in the provided code snippets.\n\n**Limitations:**\nSeveral key pieces of information are missing from the provided code:\n1. The actual API endpoint used for Markdown rendering\n2. The complete implementation of the `render()` method in GitHubRenderer\n3. Any specific handling for task lists\n4. The HTML structure generated for task lists\n5. Any client-side JavaScript that might be used to handle task list interactivity\n\nTo provide an accurate example of Markdown input and HTML output for task lists, we would need to see:\n1. The complete rendering implementation\n2. Any task list-specific processing code\n3. The actual API response handling code\n\n**Sources:** grip/__main__.py, grip/command.py, grip/constants.py, setup.py",
-      "execution_time": 14.083749771118164,
+      "generated_answer": "**Answer:**\nBased on the provided code snippets, I cannot definitively determine how Grip handles GitHub-style task lists with nested items. The code shown does not contain the specific implementation details for task list rendering.\n\n**Code Analysis:**\nFrom the code provided, we can see that Grip uses GitHub's Markdown API for rendering through the `GitHubRenderer` class in `grip/renderers.py`. The actual rendering is delegated to GitHub's API rather than being handled locally:\n\n```python\nclass GitHubRenderer(ReadmeRenderer):\n    def __init__(self, user_content=None, context=None, api_url=None, raw=None):\n        if api_url is None:\n            api_url = DEFAULT_API_URL\n        super(GitHubRenderer, self).__init__(user_content, context)\n        self.api_url = api_url\n```\n\nThe renderer validates that the input is a Unicode string but delegates the actual markdown processing to GitHub's API. The specific transformation of task lists would happen server-side at GitHub.\n\n**Details:**\nWhile we can't see the exact HTML output from the code provided, since Grip uses GitHub's API, it would generate HTML that matches GitHub's standard rendering. GitHub-style task lists typically follow this pattern:\n\nMarkdown input example:\n```markdown\n- [ ] Parent task\n  - [ ] Nested task 1\n  - [x] Nested task 2\n```\n\nHowever, the actual HTML output structure is not visible in the provided code snippets.\n\n**Limitations:**\nSeveral key pieces of information are missing from the provided code:\n1. The actual API request implementation to GitHub's markdown endpoint\n2. The response handling code that processes GitHub's HTML output\n3. Any custom processing or modifications Grip might make to the rendered HTML\n4. The specific template or structure used to display the final rendered content\n\nTo fully answer this question, we would need to see:\n1. The complete implementation of the `render()` method in `GitHubRenderer`\n2. Any post-processing of the GitHub API response\n3. The HTML templates used for final display\n\n**Sources:** grip/__main__.py, grip/command.py, grip/constants.py, setup.py",
+      "execution_time": 13.90502381324768,
       "nlp_scores": {
-        "semantic_similarity": 0.6985650658607483,
-        "rouge_l": 0.1497659906396256,
-        "overall_score": 0.5339253432944114
+        "semantic_similarity": 0.7079592347145081,
+        "rouge_l": 0.14947683109118085,
+        "overall_score": 0.5404145136275098
       },
       "judge_scores": {
-        "correctness": 5,
+        "correctness": 6,
         "completeness": 4,
-        "clarity": 7
+        "clarity": 8
       }
     },
     {
       "question": "How does Grip handle GitHub API authentication for rate limiting, and what happens when invalid credentials are provided? Please explain the authentication flow and error handling.",
       "reference_answer": "Based on the codebase, particularly the test mocks implementation, here's how Grip handles GitHub API authentication:\n\nWhen making requests to GitHub's API, Grip uses HTTP Basic Authentication with the following flow:\n\n1. Authentication headers are checked first:\n\n```python:tests/mocks.py\ndef _authenticate(self, request):\n    if 'Authorization' not in request.headers:\n        return None\n    dummy = requests.Request()\n    requests.auth.HTTPBasicAuth(*self.auth)(dummy)\n    if request.headers['Authorization'] != dummy.headers['Authorization']:\n        return (401, {'content-type': 'application/json; charset=utf-8'},\n                '{\"message\":\"Bad credentials\"}')\n    return None\n```\n\nKey aspects of the authentication handling:\n\n1. If no Authorization header is present, requests are treated as unauthenticated (subject to stricter rate limits)\n2. When credentials are provided, they're validated using HTTP Basic Auth\n3. Invalid credentials result in a 401 response with a JSON error message: `{\"message\":\"Bad credentials\"}`\n\nThe authentication is important because GitHub's API has rate limiting:\n- Unauthenticated requests: 60 requests per hour\n- Authenticated requests: 5,000 requests per hour\n\nThis means that for heavy usage or in environments where you need to render many markdown files, proper authentication is crucial to avoid hitting rate limits.\n\nWhen using Grip, you can provide GitHub credentials either through:\n- Environment variables\n- Command line arguments\n- API configuration\n\nIf invalid credentials are provided, Grip will receive the 401 error from GitHub and fall back to unauthenticated requests, but with the lower rate limit.\n\nThis implementation ensures secure handling of credentials while maintaining compatibility with GitHub's API requirements and rate limiting policies.",
-      "generated_answer": "**Answer:**\nBased on the provided code snippets, Grip handles GitHub API authentication through basic authentication using a username/password or token combination. The authentication is optional, and credentials can be specified either through settings or command-line arguments.\n\n**Code Analysis:**\n1. From `settings.py`:\n```python\n# Default settings with credentials\nUSERNAME = None\nPASSWORD = None\n```\n\n2. From `command.py`, the CLI supports authentication options:\n```python\n--user=<username> A GitHub username for API authentication\n--pass=<password> A GitHub password or auth token for API auth\n```\n\n3. From `api.py`, the authentication implementation:\n```python\n# Optional basic auth\nauth = (username, password) if username or password else None\n```\n\n**Details:**\nThe authentication flow appears to work as follows:\n\n1. Credentials can be provided through:\n   - Settings file (`settings.py`)\n   - Command line arguments (`--user` and `--pass`)\n   - Environment variables (not shown in provided snippets)\n\n2. The authentication is implemented as HTTP Basic Auth, as shown by the tuple creation in `api.py`\n\n3. The API endpoint can be customized through:\n   - Default endpoint: `DEFAULT_API_URL = 'https://api.github.com'`\n   - Custom endpoint via `--api-url` command line option\n\n**Limitations:**\nThe provided code snippets don't show:\n\n1. The actual error handling for invalid credentials\n2. How rate limiting is managed when authentication fails\n3. The specific HTTP request implementation where the auth credentials are used\n4. Any retry logic or rate limit checking\n5. The actual GitHub API calls and their responses\n\nTo fully understand the authentication error handling and rate limiting behavior, we would need to see:\n- The actual HTTP request implementation\n- Any error handling middleware or decorators\n- Rate limit checking logic\n- Response processing code\n- Error response handling code\n\nThe core authentication mechanism is visible, but the error handling and rate limiting specifics are not included in the provided snippets.\n\n**Sources:** grip/api.py, grip/command.py, grip/constants.py, grip/settings.py",
-      "execution_time": 16.058568000793457,
+      "generated_answer": "**Answer:**\nBased on the provided code snippets, Grip handles GitHub API authentication through basic authentication using a username/password (or token) pair. The authentication is optional, and credentials can be provided either through settings or command-line arguments.\n\n**Code Analysis:**\nFrom the code snippets, we can see the authentication setup in multiple files:\n\n1. In `settings.py`:\n```python\nUSERNAME = None\nPASSWORD = None\n```\nDefault credentials are set to None, with a note recommending using a personal access token instead of password for security.\n\n2. In `api.py`:\n```python\nauth = (username, password) if username or password else None\n```\nThe authentication tuple is only created if either username or password is provided.\n\n3. In `command.py`, the CLI options show:\n```\n--user=<username> A GitHub username for API authentication\n--pass=<password> A GitHub password or auth token for API auth\n```\n\n**Details:**\nThe authentication flow appears to work as follows:\n\n1. Credentials can be provided through:\n   - Command line arguments (--user and --pass)\n   - Settings configuration\n   - Default settings (which are None)\n\n2. The authentication is passed to the GitHub API through basic auth when making requests\n\n3. The API endpoint can be customized through:\n```python\nAPI_URL = None  # In settings.py\nDEFAULT_API_URL = 'https://api.github.com'  # In constants.py\n```\n\n**Limitations:**\nSeveral important aspects of the authentication handling are not visible in the provided code snippets:\n\n1. The actual API request implementation and error handling code is not shown\n2. How rate limiting errors are specifically handled is not visible\n3. The response handling for invalid credentials is not shown\n4. The specific HTTP client implementation and its error handling are not included\n5. Any retry logic or rate limit checking code is not visible\n\nTo fully understand the error handling and rate limiting behavior, we would need to see:\n- The actual API request implementation\n- Error handling middleware or decorators\n- Rate limit checking logic\n- HTTP client configuration\n- Response processing code\n\nThe provided code only shows the authentication setup, but not the complete implementation of how it's used and how errors are handled.\n\n**Sources:** grip/api.py, grip/command.py, grip/constants.py, grip/settings.py",
+      "execution_time": 12.875354766845703,
       "nlp_scores": {
-        "semantic_similarity": 0.8003344535827637,
-        "rouge_l": 0.18909090909090912,
-        "overall_score": 0.6169613902352072
+        "semantic_similarity": 0.7850602269172668,
+        "rouge_l": 0.17755443886097153,
+        "overall_score": 0.6028084905003782
       },
       "judge_scores": {
         "correctness": 7,
@@ -335,16 +335,16 @@
     {
       "question": "How does Grip handle syntax highlighting for different programming languages in markdown code blocks, and what happens when an unmatched language is specified? Explain the rendering process with examples.",
       "reference_answer": "Looking at the test files and HTML output, here's how Grip handles code block syntax highlighting:\n\nWhen processing a markdown code block, Grip generates different HTML structures based on the language specification:\n\n1. For recognized languages, it generates a `highlight` div with language-specific class:\n\n```html:tests/output/renderer/gfm-test.html\n<div class=\"highlight highlight-source-python\"><pre><span class=\"pl-en\">print</span>(<span class=\"pl-s\">'Hello!'</span>)</pre></div>\n<div class=\"highlight highlight-source-js\"><pre><span class=\"pl-smi\">console</span><span class=\"pl-kos\">.</span><span class=\"pl-en\">log</span><span class=\"pl-kos\">(</span><span class=\"pl-s\">'JavaScript!'</span><span class=\"pl-kos\">)</span><span class=\"pl-kos\">;</span></pre></div>\n```\n\n2. For unmatched languages, it falls back to a simpler structure:\n\n```html:tests/output/renderer/gfm-test-user-context.html\n<pre lang=\"unmatched_language\"><code>console.log('No matching language, but looks like JavaScript.');\n</code></pre>\n```\n\nThe key differences in handling are:\n\n1. Recognized languages:\n   - Get wrapped in a `div` with `highlight` and `highlight-source-{language}` classes\n   - Receive syntax-specific span elements with `pl-` prefixed classes for different code elements\n   - Support proper coloring of syntax elements like strings, functions, and operators\n\n2. Unmatched languages:\n   - Use a simpler `pre` and `code` structure\n   - Include the unmatched language as a `lang` attribute\n   - Don't receive any syntax-specific highlighting\n\nThis matches GitHub's own rendering behavior, ensuring that code blocks look the same whether viewed on GitHub or through Grip's local preview, while gracefully handling unsupported language specifications.\n\nThe syntax highlighting is particularly important for technical documentation, as it makes code examples more readable and helps distinguish different programming languages in the rendered output.",
-      "generated_answer": "**Answer:**\nBased on the provided code snippets, Grip primarily handles syntax highlighting through two paths: GitHub's API rendering (GitHubRenderer) or offline rendering (OfflineRenderer) using Python-Markdown with the 'codehilite' extension. The offline rendering specifically uses the 'codehilite' extension with the CSS class 'highlight'.\n\n**Code Analysis:**\nFrom `grip/renderers.py`, we can see two main rendering implementations:\n\n1. GitHubRenderer:\n- Sends markdown content to GitHub's API for rendering\n- Preserves GitHub's native syntax highlighting behavior\n- The actual syntax highlighting implementation is handled by GitHub's backend\n\n2. OfflineRenderer:\n```python\nreturn markdown.markdown(text, extensions=[\n    'fenced_code',\n    'codehilite(css_class=highlight)',\n    'toc',\n    'tables',\n    'sane_lists',\n    UrlizeExtension(),\n])\n```\n- Uses Python-Markdown with the 'codehilite' extension\n- Sets CSS class to 'highlight' for styled code blocks\n- Supports fenced code blocks through the 'fenced_code' extension\n\n**Details:**\nThe syntax highlighting process differs depending on the renderer:\n\n1. With GitHubRenderer:\n- Language detection and highlighting are handled by GitHub's API\n- Unmatched languages likely fall back to GitHub's default handling\n- The actual implementation details are abstracted away in GitHub's service\n\n2. With OfflineRenderer:\n- Highlighting is handled by Python-Markdown's codehilite extension\n- The extension typically uses Pygments for syntax highlighting\n- Unmatched languages would likely be rendered as plain text blocks\n\n**Limitations:**\nThe provided code snippets don't show:\n1. The actual CSS styles used for highlighting\n2. How language-specific syntax highlighting rules are implemented\n3. The exact fallback behavior for unmatched languages\n4. The complete configuration options for the codehilite extension\n5. How the GitHub API handles syntax highlighting specifically\n\nTo fully understand the syntax highlighting behavior, we would need:\n- The CSS styling implementation\n- The complete GitHub API response handling code\n- Any additional configuration for the codehilite extension\n- Documentation about supported language specifications\n\n**Sources:** grip/__main__.py, grip/api.py, grip/command.py, grip/renderers.py",
-      "execution_time": 16.637308835983276,
+      "generated_answer": "**Answer:**\nBased on the provided code snippets, Grip primarily handles syntax highlighting through two paths: GitHub's API rendering (GitHubRenderer) or offline rendering (OfflineRenderer) using Python-Markdown with the 'codehilite' extension. The offline rendering specifically uses the 'codehilite' extension with the CSS class 'highlight'.\n\n**Code Analysis:**\nFrom `grip/renderers.py`, we can see two main rendering implementations:\n\n1. GitHubRenderer:\n- Sends markdown content to GitHub's API for rendering\n- Preserves GitHub's native syntax highlighting behavior\n- The actual syntax highlighting implementation is handled by GitHub's backend\n\n2. OfflineRenderer:\n```python\nmarkdown.markdown(text, extensions=[\n    'fenced_code',\n    'codehilite(css_class=highlight)',\n    'toc',\n    'tables',\n    'sane_lists',\n    UrlizeExtension(),\n])\n```\n- Uses Python-Markdown with the 'codehilite' extension\n- Sets CSS class to 'highlight' for styled code blocks\n- Supports fenced code blocks through the 'fenced_code' extension\n\n**Details:**\nThe syntax highlighting process differs depending on the rendering mode:\n\n1. Online (GitHub API) mode:\n- Language detection and highlighting is handled by GitHub's API\n- Maintains consistency with GitHub's website rendering\n- Supports all languages recognized by GitHub's linguist\n\n2. Offline mode:\n- Uses Python-Markdown's codehilite extension\n- Language detection is based on the specified language in fenced code blocks\n- Highlighting is applied through CSS classes\n\n**Limitations:**\nThe provided code doesn't show:\n1. How unmatched languages are specifically handled\n2. The CSS implementation for syntax highlighting\n3. The complete list of supported languages\n4. The actual highlighting logic since it's delegated to either GitHub's API or Python-Markdown's codehilite extension\n5. The specific behavior of the codehilite extension configuration\n\nTo fully understand the syntax highlighting behavior with unmatched languages, we would need to see:\n1. The CSS styling implementation\n2. The complete codehilite extension configuration\n3. Any custom language mappings or fallback behavior\n\n**Sources:** grip/__main__.py, grip/api.py, grip/command.py, grip/renderers.py",
+      "execution_time": 11.516305923461914,
       "nlp_scores": {
-        "semantic_similarity": 0.7062938809394836,
-        "rouge_l": 0.17123287671232876,
-        "overall_score": 0.5457755796713372
+        "semantic_similarity": 0.7056206464767456,
+        "rouge_l": 0.16095890410958905,
+        "overall_score": 0.5422221237665986
       },
       "judge_scores": {
-        "correctness": 6,
-        "completeness": 5,
+        "correctness": 7,
+        "completeness": 6,
         "clarity": 8
       }
     }
