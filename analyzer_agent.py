@@ -30,19 +30,39 @@ class RepositoryAnalysisAgent:
         self.mcp_client = MCPClient()
         self.analysis_questions = {
             "architecture": [
+                "What is the main entry point of this application?",
+                "Describe the main modules and their responsibilities.",
+                "How is the directory structure organized?",
+                "What are the main classes and their relationships?",
+                "Is there a clear separation of concerns in the codebase?",
                 "Are there any notable architectural conventions (e.g. layered, MVC, microservices)?",
             ],
             "dependencies": [
+                "List all external Python packages used.",
+                "What are the main import statements across the codebase?",
+                "Are there any third-party integrations or API calls?",
+                "Are there any database or external service dependencies?",
                 "Are there any configuration files (requirements.txt, setup.py, pyproject.toml, Dockerfile, etc)?",
             ],
             "patterns": [
                 "Identify the main design patterns used (factory, singleton, observer, decorator, adapter, etc).",
+                "Are there any context managers or custom decorators?",
+                "How is error handling implemented?",
+                "Describe patterns used for configuration and environment management.",
             ],
             "components": [
                 "What are the key components or services in this system?",
+                "How do different modules communicate?",
+                "What are the main data structures?",
+                "Are there any public APIs, interfaces, or CLI commands?",
+                "Are there tests or testing frameworks present?",
+                "Describe any logging or monitoring mechanisms.",
             ],
             "quality": [
                 "How is documentation handled (README, comments, docstrings)?",
+                "How is test coverage across modules?",
+                "Are there TODOs or FIXMEs in the code?",
+                "Are there any known code smells or technical debt?",
             ],
         }
 
@@ -149,8 +169,11 @@ class RepositoryAnalysisAgent:
             for section, questions in self.analysis_questions.items():
                 results[section] = []
                 for q in questions:
+                    logging.info(f"=" * 100)
+                    logging.info(f"Analyzing Question: {q}")
                     ans = await self.ask(q)
                     results[section].append({"question": q, "answer": ans})
+                    logging.info(f"=" * 100)
                     await asyncio.sleep(0.3)
             return {
                 "metrics": static_metrics,
