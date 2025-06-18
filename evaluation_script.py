@@ -7,13 +7,10 @@ Measures the quality of the MCP server's answers against reference Q&A pairs.
 import json
 import os
 import sys
-import asyncio
-from pathlib import Path
-from typing import List, Dict, Any, Tuple
+from typing import List
 import logging
 from dataclasses import dataclass
 import requests
-import subprocess
 import time
 
 # NLP evaluation imports
@@ -30,7 +27,7 @@ except LookupError:
     nltk.download("punkt")
 
 # Import our RAG system
-from mcp_code_qa_server import RAGSystem
+from rag.mcp_code_qa_server import RAGSystem
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -88,17 +85,6 @@ class QAEvaluator:
             generated_answer=generated,
             semantic_similarity=semantic_sim,
             rouge_l=rouge_l,
-            overall_score=overall_score,
-            category=category,
-        )
-
-        return EvaluationResult(
-            question=question,
-            reference_answer=reference,
-            generated_answer=generated,
-            semantic_similarity=semantic_sim,
-            rouge_l=rouge_l,
-            bleu_score=bleu,
             overall_score=overall_score,
             category=category,
         )
