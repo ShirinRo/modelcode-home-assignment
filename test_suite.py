@@ -13,7 +13,7 @@ import asyncio
 from unittest.mock import patch, MagicMock
 
 # Import our modules
-from mcp_code_qa_server import RAGSystem, CodeParser, VectorStore, CodeChunk
+from rag_system import RAGSystem, CodeParser, VectorStore, CodeChunk
 from evaluation_script import QAEvaluator, QAPair, GripQALoader
 from repo_analysis_agent import RepoAnalyzer, ArchitectureInfo, DependencyInfo
 
