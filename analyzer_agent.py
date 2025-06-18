@@ -17,6 +17,7 @@ from typing import List, Dict, Any
 import logging
 import os
 
+from analysis_reducer import AnalysisReducer
 from mcp_client import MCPClient
 
 logging.basicConfig(
@@ -28,41 +29,15 @@ class RepositoryAnalysisAgent:
     def __init__(self, mcp_server_path: str):
         self.mcp_server_path = mcp_server_path
         self.mcp_client = MCPClient()
+        self.analysis_reducer = AnalysisReducer()
         self.analysis_questions = {
             "architecture": [
                 "What is the main entry point of this application?",
                 "Describe the main modules and their responsibilities.",
-                "How is the directory structure organized?",
-                "What are the main classes and their relationships?",
-                "Is there a clear separation of concerns in the codebase?",
-                "Are there any notable architectural conventions (e.g. layered, MVC, microservices)?",
             ],
             "dependencies": [
                 "List all external Python packages used.",
                 "What are the main import statements across the codebase?",
-                "Are there any third-party integrations or API calls?",
-                "Are there any database or external service dependencies?",
-                "Are there any configuration files (requirements.txt, setup.py, pyproject.toml, Dockerfile, etc)?",
-            ],
-            "patterns": [
-                "Identify the main design patterns used (factory, singleton, observer, decorator, adapter, etc).",
-                "Are there any context managers or custom decorators?",
-                "How is error handling implemented?",
-                "Describe patterns used for configuration and environment management.",
-            ],
-            "components": [
-                "What are the key components or services in this system?",
-                "How do different modules communicate?",
-                "What are the main data structures?",
-                "Are there any public APIs, interfaces, or CLI commands?",
-                "Are there tests or testing frameworks present?",
-                "Describe any logging or monitoring mechanisms.",
-            ],
-            "quality": [
-                "How is documentation handled (README, comments, docstrings)?",
-                "How is test coverage across modules?",
-                "Are there TODOs or FIXMEs in the code?",
-                "Are there any known code smells or technical debt?",
             ],
         }
 
@@ -175,6 +150,7 @@ class RepositoryAnalysisAgent:
                     results[section].append({"question": q, "answer": ans})
                     logging.info(f"=" * 100)
                     await asyncio.sleep(0.3)
+
             return {
                 "metrics": static_metrics,
                 "static_dependencies": static_dependencies,
@@ -272,7 +248,9 @@ async def main():
     repo_path = args.repo_path
     agent = RepositoryAnalysisAgent(args.mcp_server)
     analysis = await agent.analyze(str(repo_path))
-    agent.write_report(analysis, str(repo_path), "analysis_report.md")
+    await agent.analysis_reducer.write_report(
+        analysis, str(repo_path), "analysis_report.md"
+    )
     print(f"Analysis complete. See report at: analysis_report.md")
 
 
