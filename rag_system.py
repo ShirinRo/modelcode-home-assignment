@@ -4,6 +4,7 @@ Retrieval Augmented Generation (RAG).
 """
 
 import json
+import os
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 import logging
@@ -14,6 +15,13 @@ import ast
 import tiktoken
 from sentence_transformers import SentenceTransformer
 import chromadb
+from langchain_anthropic import ChatAnthropic
+from langchain.schema import HumanMessage, SystemMessage
+from pydantic import SecretStr
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -272,11 +280,26 @@ class VectorStore:
 class RAGSystem:
     """Retrieval Augmented Generation system for code Q&A"""
 
-    def __init__(self, repo_path: str):
+    def __init__(self, repo_path: str, anthropic_api_key: Optional[str] = None):
         self.repo_path = Path(repo_path)
         self.parser = CodeParser()
         self.vector_store = VectorStore()
         self.chunks = []
+
+        # Initialize Claude LLM
+        anthropic_api_key = anthropic_api_key or os.getenv("ANTHROPIC_API_KEY")
+        if not anthropic_api_key:
+            logger.warning("No Anthropic API key provided. Using mock LLM for testing.")
+            self.llm = None
+        else:
+            self.llm = ChatAnthropic(
+                model_name="claude-3-5-sonnet-20241022",
+                api_key=SecretStr(anthropic_api_key),
+                temperature=0.3,
+                max_tokens_to_sample=1024,
+                timeout=30.0,
+                stop=None,
+            )
 
     def index_repository(self):
         """Index the entire repository"""
@@ -331,17 +354,66 @@ Name: {metadata['name']}
 
         context = "\n".join(context_parts)
 
-        # Generate answer (simple template-based approach)
-        # In a production system, you'd use an LLM here
+        # Generate answer with LLM
         answer = self._generate_answer(question, context, relevant_chunks)
 
         return answer
 
     def _generate_answer(self, question: str, context: str, chunks: List[Dict]) -> str:
-        """Generate an answer based on the question and context"""
-        # Simple rule-based answer generation
-        # In practice, you'd use an LLM like OpenAI GPT or similar
+        """Generate an answer based on the question and context using Claude"""
 
+        if not self.llm:
+            # Fallback to simple rule-based answer if no LLM available
+            return self._generate_simple_answer(question, context, chunks)
+
+        try:
+            system_prompt = """You are a helpful code assistant analyzing a Python codebase. 
+Use the provided code snippets to answer questions about the codebase. 
+Be specific and reference the actual code when explaining concepts.
+If the provided context doesn't contain enough information to fully answer the question, 
+acknowledge what you can determine and what information is missing."""
+
+            user_prompt = f"""Based on the following code snippets from the repository, please answer this question: {question}
+
+Code context:
+{context}
+
+Please provide a clear and detailed answer based on the code provided."""
+
+            messages = [
+                SystemMessage(content=system_prompt),
+                HumanMessage(content=user_prompt),
+            ]
+
+            response = self.llm.invoke(messages)
+
+            # Add source files to the response
+            source_files = set()
+            for chunk in chunks[:5]:
+                source_files.add(chunk["metadata"]["file_path"])
+
+            if source_files:
+                response_content = response.content
+                if isinstance(response_content, list):
+                    response_content = "\n".join(str(item) for item in response_content)
+                response_content += (
+                    f"\n\nSource files: {', '.join(sorted(source_files))}"
+                )
+            else:
+                response_content = response.content
+                if isinstance(response_content, list):
+                    response_content = "\n".join(str(item) for item in response_content)
+
+            return response_content
+
+        except Exception as e:
+            logger.error(f"Error generating answer with Claude: {e}")
+            return f"Error generating answer: {str(e)}"
+
+    def _generate_simple_answer(
+        self, question: str, context: str, chunks: List[Dict]
+    ) -> str:
+        """Simple fallback answer generation without LLM"""
         question_lower = question.lower()
 
         if "what does" in question_lower and "class" in question_lower:
