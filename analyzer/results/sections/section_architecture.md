@@ -1,48 +1,118 @@
 # Architecture Overview
 
-## Entry Points and Application Bootstrap
+## System Architecture
 
-The application follows a dual-entry point architecture, providing flexibility for both programmatic and command-line usage. This design pattern enables the system to be used as both a library and a standalone tool.
+The application follows a well-structured, component-based architecture that emphasizes modularity, extensibility, and clear separation of concerns. Built on Flask's web application framework, the system implements multiple architectural patterns to maintain code organization and facilitate future enhancements.
 
-### Primary Entry Points
+### Entry Points and Bootstrap
 
-The application's bootstrap mechanism is distributed across two key components:
+The application provides two primary entry points:
+- **Command-line Interface**: Implemented through the `main()` function, handling CLI arguments and initialization
+- **Server Bootstrap**: The `serve()` function in `grip/command.py` manages server startup and core rendering functionality
 
-- **Main Function Entry (`grip/__init__.py`)**
-  - Serves as the primary programmatic interface
-  - Exports the `main()` function for library usage
-  - Enables integration into other Python applications
+## Core Components
 
-- **Command Line Interface (`grip/command.py`)**
-  - Handles CLI-based execution
-  - Provides command-line argument parsing and processing
-  - Serves as the entry point for terminal usage
+### Module Organization
 
-### Architecture Insights
+The system is organized into distinct modules, each with specific responsibilities:
 
-The dual-entry point architecture offers several advantages:
+#### API Layer (`grip.api`)
+- Exposes core functionality through public interfaces
+- Serves as the primary integration point for external consumers
 
-1. **Separation of Concerns**
-   - Clear distinction between programmatic and CLI usage
-   - Modular design allowing for independent evolution of interfaces
+#### Application Core (`grip.app`)
+- Houses the main `Grip` Flask application
+- Manages request routing and processing
+- Implements core application logic
 
-2. **Integration Flexibility**
-   - Library consumers can utilize the `main()` function directly
-   - Command-line users benefit from a dedicated CLI interface
-   - Supports both scripting and interactive usage patterns
+#### Content Processing
+- **Readers Module**: Implements multiple reading strategies
+  - `DirectoryReader`: File system access
+  - `StdinReader`: Standard input processing
+  - `TextReader`: Plain text handling
 
-3. **Maintainability**
-   - Isolated entry points reduce coupling
-   - Changes to CLI handling don't affect library consumers
-   - Clear boundaries for testing and modification
+- **Renderers Module**: Handles content transformation
+  - `GitHubRenderer`: GitHub-styled output
+  - `OfflineRenderer`: Local rendering capabilities
+  - `ReadmeRenderer`: README-specific formatting
 
-## Recommendations
+#### Asset Management
+- Dedicated managers for resource handling:
+  ```python
+  - GitHubAssetManager
+  - ReadmeAssetManager
+  ```
+- Centralized asset control and distribution
 
-Based on the architectural analysis, consider:
+## Architectural Patterns
 
-- Documenting the specific responsibilities of each entry point
-- Ensuring consistent error handling across both interfaces
-- Maintaining clear separation between CLI parsing and core logic
-- Adding interface stability guarantees for library consumers
+### Component-Based Design
+- Loose coupling between components
+- Interface-based communication
+- Clear component boundaries and responsibilities
 
-This architecture provides a solid foundation for both library and tool usage, though further analysis of the specific implementation details would be beneficial for a complete assessment.
+### Factory Pattern Implementation
+```python
+# Example factory methods
+default_renderer()
+default_asset_manager()
+```
+- Flexible component instantiation
+- Runtime implementation selection
+
+### Layered Architecture
+1. **Presentation Layer**: Renderers and output formatting
+2. **Business Logic Layer**: Core application processing
+3. **Data Access Layer**: Content readers and input handling
+4. **Asset Management Layer**: Resource handling and distribution
+
+## Design Principles
+
+### Separation of Concerns
+- Distinct module responsibilities
+- Clear interfaces between components
+- Isolated functionality within layers
+
+### Extensibility
+- Open for extension through inheritance
+- Plugin-style architecture for readers and renderers
+- Configuration-driven behavior
+
+### Configuration Management
+- Centralized constants in `constants.py`
+- External configuration capabilities
+- Environment-based settings
+
+## Technical Considerations
+
+### Dependency Management
+- Inverted dependencies through interfaces
+- Minimal coupling between components
+- Clear dependency hierarchy
+
+### Code Organization
+```
+grip/
+├── api/
+├── app/
+├── readers/
+├── renderers/
+├── assets/
+└── constants.py
+```
+
+### Best Practices
+- Single Responsibility Principle adherence
+- DRY (Don't Repeat Yourself) implementation
+- Clear inheritance hierarchies
+- Interface-based design
+
+## Summary
+
+The architecture demonstrates a thoughtful approach to system design, emphasizing maintainability and extensibility. The component-based structure, combined with clear layering and separation of concerns, provides a solid foundation for future development while maintaining code quality and organizational clarity.
+
+Future architectural considerations might include:
+- Microservices adaptation potential
+- Additional rendering strategies
+- Enhanced asset management capabilities
+- Extended plugin architecture

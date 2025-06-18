@@ -33,9 +33,24 @@ class RepositoryAnalysisAgent:
         self.analysis_questions = {
             "architecture": [
                 "What is the main entry point of this application?",
+                "Describe the main modules and their responsibilities.",
+                "Are there any notable architectural conventions (e.g. layered, MVC, microservices)?",
             ],
             "dependencies": [
                 "List all external Python packages used.",
+                "Are there any third-party integrations or API calls?",
+            ],
+            "patterns": [
+                "Identify the main design patterns used (factory, singleton, observer, decorator, adapter, etc).",
+                "Describe patterns used for configuration and environment management.",
+            ],
+            "components": [
+                "What are the key components or services in this system?",
+                "What are the main data structures?",
+            ],
+            "quality": [
+                "How is documentation handled (README, comments, docstrings)?",
+                "How is test coverage across modules?",
             ],
         }
 
