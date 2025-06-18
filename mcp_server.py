@@ -118,3 +118,13 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
                 text="No such tool. Available tools: index_repository, ask_question",
             )
         ]
+
+
+async def main():
+    """Main entry point"""
+    async with stdio_server() as (read_stream, write_stream):
+        await app.run(read_stream, write_stream, app.create_initialization_options())
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

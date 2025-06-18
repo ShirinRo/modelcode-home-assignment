@@ -19,32 +19,56 @@ load_dotenv()
 class MCPClient:
     def __init__(self):
         self.session: Optional[ClientSession] = None
-        self.exit_stack = AsyncExitStack()
+        self.exit_stack: Optional[AsyncExitStack] = None
         self.anthropic = Anthropic()
         self.conversation_history: List[MessageParam] = []
+        self.stdio = None
+        self.write = None
 
     async def connect_to_server(self, server_script_path: str):
         """Connect to an MCP server."""
+        # Clean up any existing connection first
+        if self.session is not None:
+            await self.close()
+
         is_python = server_script_path.endswith(".py")
         is_js = server_script_path.endswith(".js")
         if not (is_python or is_js):
             raise ValueError("Server script must be a .py or .js file")
+
         command = "python" if is_python else "node"
         server_params = StdioServerParameters(
             command=command, args=[server_script_path], env=None
         )
-        stdio_transport = await self.exit_stack.enter_async_context(
-            stdio_client(server_params)
-        )
-        self.stdio, self.write = stdio_transport
-        self.session = await self.exit_stack.enter_async_context(
-            ClientSession(self.stdio, self.write)
-        )
-        await self.session.initialize()
-        # Optionally print available tools:
-        response = await self.session.list_tools()
-        tools = response.tools
-        print("\nConnected to server with tools:", [tool.name for tool in tools])
+
+        # Create new exit stack for this connection
+        self.exit_stack = AsyncExitStack()
+
+        try:
+            stdio_transport = await self.exit_stack.enter_async_context(
+                stdio_client(server_params)
+            )
+            self.stdio, self.write = stdio_transport
+
+            self.session = await self.exit_stack.enter_async_context(
+                ClientSession(self.stdio, self.write)
+            )
+            await self.session.initialize()
+
+            # Print available tools
+            response = await self.session.list_tools()
+            tools = response.tools
+            print("\nConnected to server with tools:", [tool.name for tool in tools])
+
+        except Exception as e:
+            # If connection fails, clean up the exit stack
+            if self.exit_stack:
+                try:
+                    await self.exit_stack.aclose()
+                except Exception:
+                    pass  # Ignore cleanup errors
+                self.exit_stack = None
+            raise e
 
     async def process_query(self, query: str) -> str:
         """Process a query using Claude and available tools"""
@@ -53,7 +77,7 @@ class MCPClient:
                 "MCPClient not connected: call 'await connect_to_server(...)' first."
             )
 
-        # ADD: Add new query to conversation history
+        # Add new query to conversation history
         self.conversation_history.append({"role": "user", "content": query})
 
         response = await self.session.list_tools()
@@ -83,7 +107,6 @@ class MCPClient:
 
         for content in response.content:
             if content.type == "text":
-                final_text.append(content.text)
                 assistant_content.append({"type": "text", "text": content.text})
             elif content.type == "tool_use":
                 tool_name = content.name
@@ -108,8 +131,6 @@ class MCPClient:
                 # Execute tool call
                 result = await self.session.call_tool(tool_name, tool_args)
                 tool_results.append({"call": tool_name, "result": result})
-                final_text.append(f"[Called tool {tool_name}]")
-
                 # Add assistant message with tool use
                 self.conversation_history.append(
                     {"role": "assistant", "content": assistant_content}
@@ -143,7 +164,7 @@ class MCPClient:
                     if final_content.type == "text":
                         final_text.append(final_content.text)
 
-        # ADD: Add final assistant response to conversation history
+        # Add final assistant response to conversation history
         if response.content:
             final_assistant_content = []
             for content in response.content:
@@ -199,12 +220,23 @@ class MCPClient:
         self.conversation_history = []
 
     async def close(self):
-        await self.exit_stack.aclose()
+        """Properly close the MCP client connection"""
+        if self.exit_stack is not None:
+            try:
+                await self.exit_stack.aclose()
+            except Exception as e:
+                # Log the error but don't raise it during cleanup
+                print(f"Warning: Error during MCP client cleanup: {e}")
+            finally:
+                self.exit_stack = None
+                self.session = None
+                self.stdio = None
+                self.write = None
 
 
 async def main():
     client = MCPClient()
-    await client.connect_to_server("repo_mcp/mcp_server.py")
+    await client.connect_to_server("mcp_server.py")
 
     # First query - index repo
     result1 = await client.process_query("index the repo grip-no-tests")

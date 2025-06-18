@@ -17,7 +17,7 @@ from typing import List, Dict, Any
 import logging
 import os
 
-from repo_mcp.mcp_client import MCPClient
+from mcp_client import MCPClient
 
 logging.basicConfig(
     level=logging.INFO, format="[%(asctime)s] %(levelname)s: %(message)s"
@@ -194,7 +194,7 @@ class RepositoryAnalysisAgent:
         for section, qas in analysis["qa"].items():
             lines.append(f"## {section.capitalize()} Analysis\n")
             for qa in qas:
-                lines.append(f"**Q:** {qa['question']}")
+                lines.append(f"**Q:** {qa['question']}\n")
                 ans = qa["answer"].strip()
                 if ans:
                     lines.append(
