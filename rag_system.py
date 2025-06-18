@@ -11,20 +11,16 @@ import logging
 
 # Third-party imports
 from langchain.text_splitter import PythonCodeTextSplitter
-from langchain.embeddings import HuggingFaceEmbeddings
-from langchain.vectorstores import Chroma
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain.schema import Document
 from langchain_anthropic import ChatAnthropic
-from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from langchain.schema import HumanMessage, SystemMessage, BaseMessage
+from langchain.schema import HumanMessage, BaseMessage
 from pydantic import SecretStr
 from dotenv import load_dotenv
 
-# Load environment variables from .env file
 load_dotenv()
-
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -40,42 +36,33 @@ class RAGSystem:
             repo_path: Path to the repository to index
         """
         self.repo_path = Path(repo_path)
-        self.chunks = []  # Keep for compatibility with MCP server
-        self.repo_description = ""  # For enhanced context
+        self.repo_description = ""
 
         anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-
-        # Initialize text splitter with better parameters for code
         self.text_splitter = PythonCodeTextSplitter(
-            chunk_size=1200,  # Balanced size for better context
-            chunk_overlap=250,  # Good overlap for continuity
+            chunk_size=1200,
+            chunk_overlap=250,
         )
-
-        # Initialize embeddings
         self.embeddings = HuggingFaceEmbeddings(
             model_name="sentence-transformers/all-MiniLM-L6-v2",
             model_kwargs={"device": "cpu"},
             encode_kwargs={"normalize_embeddings": True},
         )
-
-        # Initialize vector store
         self.vector_store = None
 
-        # Initialize Claude LLM
         if not anthropic_api_key:
-            logger.warning("No Anthropic API key provided. Using mock LLM for testing.")
+            logger.error("No Anthropic API key provided.")
             self.llm = None
         else:
             self.llm = ChatAnthropic(
                 model_name="claude-3-5-sonnet-20241022",
                 api_key=SecretStr(anthropic_api_key),
-                temperature=0.1,  # Lower temperature for more focused answers
-                max_tokens_to_sample=1500,  # More tokens for detailed explanations
+                temperature=0.1,
+                max_tokens_to_sample=1500,
                 timeout=45.0,
                 stop=None,
             )
 
-        # Enhanced QA prompt template
         self.qa_prompt = PromptTemplate(
             input_variables=["context", "question"],
             template="""You are an expert Python code analyst. Your task is to answer questions about a codebase using the provided code snippets.
@@ -129,19 +116,15 @@ Response:""",
         python_files = list(self.repo_path.rglob("*.py"))
         logger.info(f"Found {len(python_files)} Python files")
 
-        # Create documents from Python files
         documents = []
-
         for file_path in python_files:
             try:
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
 
-                # Skip empty files
                 if not content.strip():
                     continue
 
-                # Create document with enhanced metadata (compatible with original)
                 doc = Document(
                     page_content=content,
                     metadata={
@@ -160,23 +143,15 @@ Response:""",
             logger.warning("No documents to index")
             return
 
-        # Generate repository description for better context
         self.repo_description = self._generate_repo_description(documents)
-
-        # Split documents into chunks
         all_chunks = []
         for doc in documents:
             chunks = self.text_splitter.split_documents([doc])
-            # Add file metadata to each chunk and maintain compatibility
             for chunk in chunks:
                 chunk.metadata.update(doc.metadata)
             all_chunks.extend(chunks)
 
         logger.info(f"Created {len(all_chunks)} chunks from {len(documents)} documents")
-
-        # Store chunks for compatibility with MCP server
-        self.chunks = all_chunks
-
         # Create vector store
         persist_dir = "./chroma_db"
         if os.path.exists(persist_dir):
@@ -193,21 +168,6 @@ Response:""",
         self.vector_store.persist()
 
         logger.info(f"Indexed {len(all_chunks)} chunks successfully")
-
-    def _determine_chunk_type(self, content: str) -> str:
-        """Determine chunk type for MCP compatibility"""
-        content_lower = content.lower().strip()
-
-        if "class " in content_lower:
-            return "class"
-        elif "def " in content_lower:
-            return "function"
-        elif "import " in content_lower or "from " in content_lower:
-            return "import"
-        elif content_lower.startswith('"""') or content_lower.startswith("'''"):
-            return "docstring"
-        else:
-            return "code"
 
     def _get_enhanced_context(self, question: str, k: int = 6) -> str:
         """Get enhanced context with better formatting"""
@@ -272,19 +232,14 @@ Response:""",
 
         try:
             context = self._get_enhanced_context(question)
-
-            # Use the enhanced prompt
             formatted_prompt = self.qa_prompt.format(context=context, question=question)
 
-            # Get response from Claude
             messages = [cast(BaseMessage, HumanMessage(content=formatted_prompt))]
             response = self.llm(messages)
             answer = response.content
 
-            # Ensure answer is a string (handle list/dict cases)
             if not isinstance(answer, str):
                 if isinstance(answer, list):
-                    # Join list elements as string
                     answer = "\n".join(
                         str(item) if isinstance(item, str) else str(item)
                         for item in answer
@@ -292,9 +247,7 @@ Response:""",
                 else:
                     answer = str(answer)
 
-            # Add source information
             if self.vector_store:
-                # Get source files from the retrieved context
                 docs = self.vector_store.similarity_search(question, k=5)
                 sources = set()
                 for doc in docs:
@@ -309,29 +262,3 @@ Response:""",
         except Exception as e:
             logger.error(f"Error answering question: {e}")
             return f"Error processing question: {str(e)}"
-
-
-# Backward compatibility - keep the original class name available
-class ImprovedRAGSystem(RAGSystem):
-    """Alias for backward compatibility"""
-
-    pass
-
-
-# Example usage
-if __name__ == "__main__":
-    # Test the improved system
-    rag = RAGSystem("grip-no-tests")
-    rag.index_repository()
-
-    # Test questions
-    test_questions = [
-        "How do I run grip from command line on a specific port?",
-    ]
-
-    for question in test_questions:
-        print(f"\nQ: {question}")
-        print("-" * 60)
-        answer = rag.answer_question(question)
-        print(answer)
-        print("=" * 80)

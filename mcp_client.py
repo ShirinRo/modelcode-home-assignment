@@ -21,7 +21,6 @@ class MCPClient:
         self.session: Optional[ClientSession] = None
         self.exit_stack = AsyncExitStack()
         self.anthropic = Anthropic()
-        # ADD: Maintain conversation history
         self.conversation_history: List[MessageParam] = []
 
     async def connect_to_server(self, server_script_path: str):
@@ -71,7 +70,6 @@ class MCPClient:
                 )
             )
 
-        # CHANGED: Use conversation history instead of fresh messages
         response = self.anthropic.messages.create(
             model="claude-3-5-sonnet-20241022",
             max_tokens=1000,
@@ -79,11 +77,8 @@ class MCPClient:
             tools=available_tools,
         )
 
-        # Process response and handle tool calls
         tool_results = []
         final_text = []
-
-        # ADD: Keep track of assistant response
         assistant_content = []
 
         for content in response.content:
@@ -115,12 +110,12 @@ class MCPClient:
                 tool_results.append({"call": tool_name, "result": result})
                 final_text.append(f"[Called tool {tool_name}]")
 
-                # ADD: Add assistant message with tool use
+                # Add assistant message with tool use
                 self.conversation_history.append(
                     {"role": "assistant", "content": assistant_content}
                 )
 
-                # ADD: Add tool result as user message
+                # Add tool result as user message
                 tool_result_text = self.extract_text_from_content(result.content)
                 self.conversation_history.append(
                     {
@@ -209,7 +204,7 @@ class MCPClient:
 
 async def main():
     client = MCPClient()
-    await client.connect_to_server("mcp_server.py")
+    await client.connect_to_server("repo_mcp/mcp_server.py")
 
     # First query - index repo
     result1 = await client.process_query("index the repo grip-no-tests")

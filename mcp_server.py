@@ -11,20 +11,16 @@ from typing import List, Dict, Any, Optional
 import logging
 from rag_system import RAGSystem
 
-# Third-party imports
 from mcp import types
 from mcp.server import Server
 from mcp.server.stdio import stdio_server
 
 
-# Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# MCP Server Implementation
-app = Server("code-qa-server")
 
-# Global RAG system instance
+app = Server("code-qa-server")
 rag_system: Optional[RAGSystem] = None
 
 
@@ -122,13 +118,3 @@ async def call_tool(name: str, arguments: Dict[str, Any]) -> List[types.TextCont
                 text="No such tool. Available tools: index_repository, ask_question",
             )
         ]
-
-
-async def main():
-    """Main entry point"""
-    async with stdio_server() as (read_stream, write_stream):
-        await app.run(read_stream, write_stream, app.create_initialization_options())
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

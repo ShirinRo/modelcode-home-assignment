@@ -14,14 +14,14 @@ import logging
 from typing import Dict, List, Optional, Any, Literal
 from dataclasses import dataclass, asdict
 from dotenv import load_dotenv
-from qa_loader import QADataLoader, QAPair
-from nlp_evaluator import NLPEvaluator, NLPScores
-from llm_judge_evaluator import LLMJudgeEvaluator, JudgeScores
-from evaluation_reporter import EvaluationReporter
+from .qa_loader import QADataLoader, QAPair
+from .evaluators.nlp_evaluator import NLPEvaluator, NLPScores
+from .evaluators.llm_judge_evaluator import LLMJudgeEvaluator, JudgeScores
+from .evaluation_reporter import EvaluationReporter
 
 # Add the parent directory to the Python path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
-from repo_mcp.rag_system import RAGSystem
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+from rag_system import RAGSystem
 
 load_dotenv()
 logger = logging.getLogger(__name__)

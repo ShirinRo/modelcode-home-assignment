@@ -40,7 +40,6 @@ class RepositoryAnalysisAgent:
             ],
             "components": [
                 "What are the key components or services in this system?",
-                "How do different modules communicate?",
             ],
             "quality": [
                 "How is documentation handled (README, comments, docstrings)?",
@@ -237,10 +236,6 @@ async def main():
         description="Analyze a Python repository using MCP"
     )
     parser.add_argument("--repo-path", required=True, help="Path to the repository")
-
-    parser.add_argument(
-        "--output", default="analysis_report.md", help="Output markdown file"
-    )
     parser.add_argument(
         "--mcp-server",
         default="mcp_server.py",
@@ -254,8 +249,8 @@ async def main():
     repo_path = args.repo_path
     agent = RepositoryAnalysisAgent(args.mcp_server)
     analysis = await agent.analyze(str(repo_path))
-    agent.write_report(analysis, str(repo_path), args.output)
-    print(f"Analysis complete. See report at: {args.output}")
+    agent.write_report(analysis, str(repo_path), "analysis_report.md")
+    print(f"Analysis complete. See report at: analysis_report.md")
 
 
 if __name__ == "__main__":
