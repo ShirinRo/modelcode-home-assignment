@@ -5,3 +5,4 @@ venv/
 chroma_db/
 .DS_Store
 *.log
+.env
