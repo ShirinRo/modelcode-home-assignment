@@ -364,7 +364,7 @@ Create a comprehensive, professional repository analysis report:"""
         return "\n".join(lines)
 
     async def write_report(
-        self, analysis: Dict[str, Any], repo_path: str, output_path: str
+        self, analysis: Dict[str, Any], repo_path: str, output_report_filename: str
     ):
         """
         Enhanced write_report function that uses LLM reduction to create a cohesive markdown report.
@@ -375,6 +375,11 @@ Create a comprehensive, professional repository analysis report:"""
             output_path: Path where the final report should be written
         """
         logging.info(f"Creating enhanced report for {repo_path}")
+        results_directory = "analyzer/results"
+        Path(results_directory).mkdir(parents=True, exist_ok=True)
+        sections_results_directory = results_directory + "/sections"
+        Path(sections_results_directory).mkdir(parents=True, exist_ok=True)
+        output_path = f"{results_directory}/{output_report_filename}"
 
         try:
             # Step 1: Reduce each section using LLM
@@ -387,7 +392,7 @@ Create a comprehensive, professional repository analysis report:"""
                 reduced_sections[section_name] = reduced_content
 
                 # Optional: Save individual section files for reference
-                section_file = f"section_{section_name}.md"
+                section_file = f"{sections_results_directory}/section_{section_name}.md"
                 Path(section_file).write_text(reduced_content, encoding="utf-8")
                 logging.info(f"Section {section_name} saved to {section_file}")
 

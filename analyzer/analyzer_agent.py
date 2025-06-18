@@ -17,7 +17,7 @@ from typing import List, Dict, Any
 import logging
 import os
 
-from analysis_reducer import AnalysisReducer
+from .analysis_reducer import AnalysisReducer
 from mcp_client import MCPClient
 
 logging.basicConfig(
@@ -33,11 +33,9 @@ class RepositoryAnalysisAgent:
         self.analysis_questions = {
             "architecture": [
                 "What is the main entry point of this application?",
-                "Describe the main modules and their responsibilities.",
             ],
             "dependencies": [
                 "List all external Python packages used.",
-                "What are the main import statements across the codebase?",
             ],
         }
 
@@ -159,75 +157,12 @@ class RepositoryAnalysisAgent:
         finally:
             await self.close()
 
-    def write_report(self, analysis: Dict[str, Any], repo_path: str, output_path: str):
-        dt = datetime.now().strftime("%Y-%m-%d %H:%M")
-        lines = [
-            "# Repository Analysis Report",
-            "",
-            f"**Repository:** `{repo_path}`",
-            f"**Date:** {dt}",
-            "",
-            "## Executive Summary",
-            "",
-            f"- Python files: **{analysis['metrics']['python_files']}**",
-            f"- Test files: **{analysis['metrics']['test_files']}**",
-            f"- Total files: **{analysis['metrics']['total_files']}**",
-            f"- Config files: **{', '.join(analysis['metrics']['config_files']) or 'None'}**",
-            f"- Documentation files: **{', '.join(analysis['metrics']['doc_files']) or 'None'}**",
-            "",
-            "## Directory Structure",
-            "",
-        ]
-        for d in sorted(analysis["metrics"]["directories"])[:20]:
-            lines.append(f"- `{d}`")
-        lines.append("")
-        lines.append("## Static Dependency Analysis\n")
-        if analysis["static_dependencies"]:
-            for dep in analysis["static_dependencies"]:
-                lines.append(f"- `{dep}`")
-        else:
-            lines.append("No dependencies found in static files.")
-        lines.append("")
-
-        # Main report sections
-        for section, qas in analysis["qa"].items():
-            lines.append(f"## {section.capitalize()} Analysis\n")
-            for qa in qas:
-                lines.append(f"**Q:** {qa['question']}\n")
-                ans = qa["answer"].strip()
-                if ans:
-                    lines.append(
-                        f"**A:** {ans[:1600]}{'...' if len(ans) > 1600 else ''}\n"
-                    )
-                else:
-                    lines.append("**A:** *(No answer)*\n")
-            lines.append("")
-
-        # Recommendations (simple heuristics)
-        lines.append("## Recommendations\n")
-        recs = []
-        if analysis["metrics"]["test_files"] < max(
-            1, analysis["metrics"]["python_files"] // 3
-        ):
-            recs.append("Consider improving test coverage.")
-        if len(analysis["metrics"]["doc_files"]) < 2:
-            recs.append(
-                "Consider adding more documentation (README, contributing guide, etc)."
-            )
-        if not analysis["metrics"]["config_files"]:
-            recs.append(
-                "Consider adding configuration files for dependencies and environments."
-            )
-        if not recs:
-            recs.append("No immediate issues detected. Codebase looks well structured.")
-        for i, rec in enumerate(recs, 1):
-            lines.append(f"{i}. {rec}")
-
-        lines.append(
-            "\n---\n*Report generated automatically by Repository Analysis Agent.*"
+    async def write_report(
+        self, analysis: Dict[str, Any], repo_path: str, output_report_filename: str
+    ):
+        await self.analysis_reducer.write_report(
+            analysis, str(repo_path), output_report_filename
         )
-        Path(output_path).write_text("\n".join(lines), encoding="utf-8")
-        logging.info(f"Report written to {output_path}")
 
 
 async def main():
@@ -248,9 +183,7 @@ async def main():
     repo_path = args.repo_path
     agent = RepositoryAnalysisAgent(args.mcp_server)
     analysis = await agent.analyze(str(repo_path))
-    await agent.analysis_reducer.write_report(
-        analysis, str(repo_path), "analysis_report.md"
-    )
+    await agent.write_report(analysis, str(repo_path), "analysis_report.md")
     print(f"Analysis complete. See report at: analysis_report.md")
 
 
